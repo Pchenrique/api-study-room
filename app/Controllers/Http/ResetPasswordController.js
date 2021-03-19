@@ -16,7 +16,7 @@ class ResetPasswordController {
       const userToken = await Token.findByOrFail('token', token);
 
       const tokenExpired = moment()
-        .subtract(2, 'hours')
+        .subtract(5, 'hours')
         .isAfter(userToken.created_at);
 
       if (tokenExpired || userToken.is_revoked) {
@@ -36,7 +36,7 @@ class ResetPasswordController {
         ]);
       }
       const user = await userToken.user().fetch();
-
+      console.log(user);
       user.password = password;
 
       await user.save(trx);
