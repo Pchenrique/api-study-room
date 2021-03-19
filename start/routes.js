@@ -16,4 +16,11 @@
 /** @type {typeof import('@adonisjs/framework/src/Route/Manager')} */
 const Route = use('Route');
 
-Route.get('/', () => ({ greeting: 'Hello world in JSON' }));
+Route.post('auth', 'AuthController.authenticate').validator(
+  'auth/Authenticate'
+);
+
+Route.get('/files/:file', 'FileController.show');
+
+// routes users
+Route.post('user', 'UserController.store').validator('user/Store');
