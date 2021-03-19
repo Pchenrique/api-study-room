@@ -1,5 +1,7 @@
 'use strict';
 
+const path = use('path');
+
 /*
 |--------------------------------------------------------------------------
 | Providers
@@ -16,9 +18,13 @@ const providers = [
   '@adonisjs/bodyparser/providers/BodyParserProvider',
   '@adonisjs/cors/providers/CorsProvider',
   '@adonisjs/lucid/providers/LucidProvider',
+  '@adonisjs/framework/providers/ViewProvider',
   '@adonisjs/validator/providers/ValidatorProvider',
   '@adonisjs/antl/providers/AntlProvider',
   '@adonisjs/drive/providers/DriveProvider',
+  '@adonisjs/mail/providers/MailProvider',
+
+  path.join(__dirname, '..', 'providers', 'CustomValidationProvider'),
 ];
 
 /*

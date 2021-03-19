@@ -20,7 +20,15 @@ Route.post('auth', 'AuthController.authenticate').validator(
   'auth/Authenticate'
 );
 
-Route.get('/files/:file', 'FileController.show');
+Route.get('files/:file', 'FileController.show');
+
+Route.post('forgotPassword', 'ForgotPasswordController.store').validator(
+  'forgot/Forgot'
+);
+
+Route.put('resetPassword', 'ResetPasswordController.reset').validator(
+  'reset/Reset'
+);
 
 // routes users
 Route.post('user', 'UserController.store').validator('user/Store');
