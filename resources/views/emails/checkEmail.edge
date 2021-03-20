@@ -89,7 +89,7 @@
               width: 100%;
               margin: auto;"
             >
-              Resetar senha
+              Verificação de e-mail
             </span>
           </div>
 
@@ -102,7 +102,7 @@
               text-align: center;
             "
           >
-            Olá, {{name}}!
+            Olá, {{user.name}}!
           </h1><br />
           <p
             style="
@@ -112,12 +112,11 @@
               color: #555;
             "
           >
-            Parece que você solicitou a recuperação de sua senha da conta no
-            Study Room.<br /><br />Para resetar basta clicar no botão
-            abaixo:
+            Bem vindo ao <b style="color: #8CC8F3;">Study Room,</b> falta pouco para você usar a sua conta, basta validar o email cadastrado.<br /><br />
+            Para validar o e-mail <span style="color: #8CC8F3;">{{user.email}}</span> basta clicar no botão abaixo:
          <br /><br /><br />
           <a
-            href="{{resetPasswordUrl}}"
+            href="{{checkEmailUrl}}"
             target="_blank"
             style="
               padding: 15px 25px;
@@ -129,7 +128,7 @@
               font-weight: 600;
               margin-bottom: 20px;
             "
-            >Recuperar senha</a
+            >Validar e-mail</a
           ><br /><br />
         </p>
 
@@ -144,7 +143,7 @@
           Caso o botão não funcione clique ou copie o link abaixo:
           <br />
           <a
-            href="{{resetPasswordUrl}}"
+            href="{{checkEmailUrl}}"
             target="_blank"
             style="
               color: #8CC8F3;
@@ -153,7 +152,7 @@
               font-size: 12px;
               text-align: center;
             "
-            >{{resetPasswordUrl}}</a
+            >{{checkEmailUrl}}</a
           ><br /><br /><br />
           <span style="text-align: center; margin-bottom: 30px; color: #555; width: 100%; font-size: 15px">
             Abraços,<br />
@@ -167,7 +166,7 @@
             Comunicado
           </h3>
           <p style="font-size: 13px; color: #777777; max-width: 270px; margin: 0 auto;">
-            Caso você não tenha pedido a recuperação de senha desconsidere esse
+            Caso você não tenha cadastrado o seu email na plataforma desconsidere esse
             email.<br /><br />Em caso de qualquer dúvida entre em contato pelo
             email
             <a

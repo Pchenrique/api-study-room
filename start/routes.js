@@ -30,5 +30,9 @@ Route.put('resetPassword', 'ResetPasswordController.reset').validator(
   'reset/Reset'
 );
 
+Route.put('checkEmail', 'CheckEmailController.checkEmail').validator(
+  'email/CheckEmail'
+);
+
 // routes users
 Route.post('user', 'UserController.store').validator('user/Store');

@@ -9,6 +9,7 @@ class UserSchema extends Schema {
       table.increments();
       table.string('name', 80).notNullable();
       table.string('email', 254).notNullable().unique();
+      table.boolean('is_verify').defaultTo(false);
       table.string('password', 60).notNullable();
       table.string('avatar', 254);
       table.timestamps();

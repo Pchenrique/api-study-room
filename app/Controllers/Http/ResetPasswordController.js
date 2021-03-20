@@ -36,7 +36,7 @@ class ResetPasswordController {
         ]);
       }
       const user = await userToken.user().fetch();
-      console.log(user);
+
       user.password = password;
 
       await user.save(trx);
