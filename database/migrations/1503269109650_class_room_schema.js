@@ -3,11 +3,12 @@
 /** @type {import('@adonisjs/lucid/src/Schema')} */
 const Schema = use('Schema');
 
-class ClassroomSchema extends Schema {
+class ClassRoomSchema extends Schema {
   up() {
-    this.create('classrooms', (table) => {
+    this.create('class_rooms', (table) => {
       table.increments();
       table.string('title', 45).notNullable();
+      table.string('code', 20).notNullable().unique();
       table.text('description', 'longtext').notNullable();
       table.string('avatar', 100);
       table.timestamps();
@@ -15,8 +16,8 @@ class ClassroomSchema extends Schema {
   }
 
   down() {
-    this.drop('classrooms');
+    this.drop('class_rooms');
   }
 }
 
-module.exports = ClassroomSchema;
+module.exports = ClassRoomSchema;

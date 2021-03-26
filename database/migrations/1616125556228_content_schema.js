@@ -16,10 +16,10 @@ class ContentSchema extends Schema {
         .inTable('users')
         .onUpdate('CASCADE');
       table
-        .integer('classroom_id')
+        .integer('class_room_id')
         .unsigned()
         .references('id')
-        .inTable('classrooms')
+        .inTable('class_rooms')
         .onUpdate('CASCADE');
       table
         .integer('content_type_id')
