@@ -121,7 +121,7 @@ class ClassRoomController {
         return response.status(409).json([
           {
             message: 'Student does not participate in this classroom',
-            fiels: 'classroom',
+            field: 'classroom',
             validation: 'participate',
           },
         ]);
