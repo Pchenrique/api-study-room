@@ -65,9 +65,8 @@ class ClassRoomController {
     }
 
     await user.classRooms().attach(roomCode.id);
-    await user.load('classRooms');
 
-    return response.status(201).json(user);
+    return response.status(201).json(room);
   }
 
   /**
