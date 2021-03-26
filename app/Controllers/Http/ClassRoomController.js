@@ -103,31 +103,41 @@ class ClassRoomController {
     const { classroomId } = params;
     const { user } = auth;
 
-    const room = await ClassRoom.findOrFail(classroomId);
-    const classroomsParticip = await user.classRooms().fetch();
+    try {
+      const room = await ClassRoom.findOrFail(classroomId);
+      const classroomsParticip = await user.classRooms().fetch();
 
-    const rooms = classroomsParticip.toJSON();
-    const roomCode = room.toJSON();
+      const rooms = classroomsParticip.toJSON();
+      const roomCode = room.toJSON();
 
-    let confirmParticipation = false;
+      let confirmParticipation = false;
 
-    rooms.forEach((roomLine) => {
-      if (roomLine.id === roomCode.id) {
-        confirmParticipation = true;
+      rooms.forEach((roomLine) => {
+        if (roomLine.id === roomCode.id) {
+          confirmParticipation = true;
+        }
+      });
+
+      if (!confirmParticipation) {
+        return response.status(409).json([
+          {
+            message: 'Student does not participate in this classroom',
+            fiels: 'classroom',
+            validation: 'participate',
+          },
+        ]);
       }
-    });
 
-    if (!confirmParticipation) {
-      return response.status(409).json([
+      await user.classRooms().detach(roomCode.id);
+    } catch (err) {
+      return response.status(404).json([
         {
-          message: 'Student does not participate in this classroom',
+          message: 'classroom not found',
           fiels: 'classroom',
-          validation: 'participate',
+          validation: 'not found',
         },
       ]);
     }
-
-    await user.classRooms().detach(roomCode.id);
   }
 }
 
