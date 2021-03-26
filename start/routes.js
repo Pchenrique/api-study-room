@@ -36,3 +36,16 @@ Route.put('checkEmail', 'CheckEmailController.checkEmail').validator(
 
 // routes users
 Route.post('user', 'UserController.store').validator('user/Store');
+
+// Routes ClassRoom
+Route.get('classroom', 'ClassRoomController.index').middleware(['auth']);
+
+// Routes ClassRoom
+Route.post('classroom/enter', 'ClassRoomController.enterRoom')
+  .middleware(['auth'])
+  .validator('classroom/EnterRoom');
+
+Route.delete(
+  'classroom/leaveRoom/:classroomId',
+  'ClassRoomController.leaveRoom'
+).middleware(['auth']);

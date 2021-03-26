@@ -45,6 +45,13 @@ class User extends Model {
     return this.hasMany('App/Models/Token');
   }
 
+  classRooms() {
+    return this.belongsToMany('App/Models/ClassRoom')
+      .withTimestamps()
+      .withPivot(['is_teacher', 'is_owner'])
+      .pivotModel('App/Models/ClassRoomUser');
+  }
+
   getAvatarUrl({ avatar }) {
     return `${Env.get('APP_URL')}/files/${avatar || 'placeholder_profile.png'}`;
   }
