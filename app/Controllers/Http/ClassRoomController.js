@@ -58,7 +58,7 @@ class ClassRoomController {
       return response.status(409).json([
         {
           message: 'Student already participates in this classroom',
-          fiels: 'classroom',
+          field: 'classroom',
           validation: 'participate',
         },
       ]);
