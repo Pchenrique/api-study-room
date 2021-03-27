@@ -49,3 +49,8 @@ Route.delete(
   'classroom/leaveRoom/:classroomId',
   'ClassRoomController.leaveRoom'
 ).middleware(['auth']);
+
+Route.get(
+  'listStudent/:classroomId',
+  'ClassRoomController.listStudent'
+).middleware(['auth']);

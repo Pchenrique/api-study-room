@@ -78,7 +78,53 @@ class ClassRoomController {
    * @param {Response} ctx.response
    * @param {View} ctx.view
    */
-  async show({ params, request, response }) {}
+  async listStudent({ params, response, auth }) {
+    const { classroomId } = params;
+    const { user } = auth;
+
+    const classroom = await ClassRoom.find(classroomId);
+
+    if (!classroom) {
+      return response.status(404).json([
+        {
+          message: 'classroom not found',
+          fiels: 'classroom',
+          validation: 'not found',
+        },
+      ]);
+    }
+
+    const classroomsParticip = await user.classRooms().fetch();
+    const rooms = classroomsParticip.toJSON();
+
+    let confirmParticipation = false;
+
+    rooms.forEach((roomLine) => {
+      if (roomLine.id === classroom.id) {
+        confirmParticipation = true;
+      }
+    });
+
+    if (!confirmParticipation) {
+      return response.status(409).json([
+        {
+          message: 'Student does not participate in this classroom',
+          field: 'classroom',
+          validation: 'participate',
+        },
+      ]);
+    }
+
+    await classroom.load('users', (builder) => {
+      builder.select('name', 'email').orderBy('name', 'asc');
+    });
+
+    const classroomJson = classroom.toJSON();
+    const total = classroomJson.users.length;
+    const classroomJsonFinal = { ...classroomJson, total_student: total };
+
+    return response.status(200).json(classroomJsonFinal);
+  }
 
   /**
    * Update classroom details.
