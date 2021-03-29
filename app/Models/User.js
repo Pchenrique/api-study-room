@@ -45,6 +45,14 @@ class User extends Model {
     return this.hasMany('App/Models/Token');
   }
 
+  commentsContents() {
+    return this.hasMany('App/Models/CommentsContent');
+  }
+
+  commentsResponses() {
+    return this.hasMany('App/Models/CommentsResponse');
+  }
+
   classRooms() {
     return this.belongsToMany('App/Models/ClassRoom')
       .withTimestamps()
