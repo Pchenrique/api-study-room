@@ -7,8 +7,6 @@ class ContentSchema extends Schema {
   up() {
     this.create('contents', (table) => {
       table.increments();
-      table.string('title', 80).notNullable();
-      table.string('description', 254).notNullable();
       table
         .integer('user_id')
         .unsigned()
@@ -27,6 +25,8 @@ class ContentSchema extends Schema {
         .references('id')
         .inTable('content_types')
         .onUpdate('CASCADE');
+      table.string('title', 80).notNullable();
+      table.text('description', 'longtext').notNullable();
       table.timestamps();
     });
   }
