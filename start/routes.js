@@ -54,3 +54,9 @@ Route.get(
   'listStudent/:classroomId',
   'ClassRoomController.listStudent'
 ).middleware(['auth']);
+
+// Routes HomeWorks
+// Route.get(
+//   'listHomeWorks/:classroomId',
+//   'HomeWorkController.listHomeWorks'
+// ).middleware(['auth']);
