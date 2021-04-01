@@ -65,3 +65,8 @@ Route.get(
   'listActivities/:classroomId',
   'ContentController.listActivities'
 ).middleware(['auth']);
+
+Route.get(
+  'listMaterial/:classroomId',
+  'ContentController.listMaterial'
+).middleware(['auth']);
