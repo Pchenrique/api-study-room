@@ -19,11 +19,11 @@ const User = use('App/Models/User');
 /** @type {typeof import('@adonisjs/lucid/src/Lucid/Model')} */
 const ClassRoom = use('App/Models/ClassRoom');
 
-// /** @type {typeof import('@adonisjs/lucid/src/Lucid/Model')} */
-// const ContentType = use('App/Models/ContentType');
+/** @type {typeof import('@adonisjs/lucid/src/Lucid/Model')} */
+const ContentType = use('App/Models/ContentType');
 
-// /** @type {typeof import('@adonisjs/lucid/src/Lucid/Model')} */
-// const Content = use('App/Models/Content');
+/** @type {typeof import('@adonisjs/lucid/src/Lucid/Model')} */
+const Content = use('App/Models/Content');
 
 class FakeSeeder {
   async run() {
