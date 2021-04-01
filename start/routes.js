@@ -56,7 +56,7 @@ Route.get(
 ).middleware(['auth']);
 
 // Routes HomeWorks
-// Route.get(
-//   'listHomeWorks/:classroomId',
-//   'HomeWorkController.listHomeWorks'
-// ).middleware(['auth']);
+Route.get(
+  'listComunications/:classroomId',
+  'ContentController.listComunications'
+).middleware(['auth']);
