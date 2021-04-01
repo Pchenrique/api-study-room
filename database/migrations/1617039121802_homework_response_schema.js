@@ -11,7 +11,7 @@ class HomeworkResponseSchema extends Schema {
         .integer('homework_id')
         .unsigned()
         .references('id')
-        .inTable('homeworks')
+        .inTable('homework')
         .onUpdate('CASCADE')
         .onDelete('CASCADE');
       table

@@ -5,7 +5,7 @@ const Schema = use('Schema');
 
 class HomeworkSchema extends Schema {
   up() {
-    this.create('homeworks', (table) => {
+    this.create('homework', (table) => {
       table.increments();
       table
         .integer('content_id')

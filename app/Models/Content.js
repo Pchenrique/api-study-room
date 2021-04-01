@@ -21,7 +21,7 @@ class Content extends Model {
   }
 
   homework() {
-    return this.belongsTo('App/Models/Homework');
+    return this.hasOne('App/Models/Homework');
   }
 }
 

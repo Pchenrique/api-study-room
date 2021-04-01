@@ -32,7 +32,7 @@ class ClassRoomUserSchema extends Schema {
   }
 
   down() {
-    this.drop('class_room_user');
+    this.drop('class_room_users');
   }
 }
 

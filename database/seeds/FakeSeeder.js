@@ -25,6 +25,9 @@ const ContentType = use('App/Models/ContentType');
 /** @type {typeof import('@adonisjs/lucid/src/Lucid/Model')} */
 const Content = use('App/Models/Content');
 
+/** @type {typeof import('@adonisjs/lucid/src/Lucid/Model')} */
+const Homework = use('App/Models/Homework');
+
 class FakeSeeder {
   async run() {
     // create user student
@@ -90,7 +93,7 @@ class FakeSeeder {
     });
 
     await Content.create({
-      user_id: 2,
+      user_id: 1,
       class_room_id: 2,
       content_type_id: 1,
       title: 'Aula open 2',
@@ -105,6 +108,30 @@ class FakeSeeder {
       title: 'Aula open 3',
       description:
         'Ressignificou inverdades da homoafetividade se aproveitando da apropriação cultural. Alvejou a militância da luta anti-colonialista para propagar inverdades, prestou desacolhimento dos pretos, pardos, miscigenados, indígenas e autoproclamados cujos fenótipos nunca serão sobrepujados em detrimento dos negros, promoveu a deslegitimação da luta anti-colonialista infligindo sentimentos de dor na alma dos menos privilegiados. Deslegitimou a relativação de seus iguais, silenciados pela heteronormatividade patriarcal ressignificando a conversa com inverdades, potencializou o silenciamento da homoafetividade dos gays e não-binários.',
+    });
+
+    await Content.create({
+      user_id: 1,
+      class_room_id: 2,
+      content_type_id: 2,
+      title: 'Atividade 1',
+      description:
+        'Atividade 1 Atividade 1Atividade 1Atividade 1Atividade 1Atividade 1Atividade 1Atividade 1Atividade 1Atividade 1',
+    });
+
+    await Homework.create({
+      content_id: 4,
+      dateLimit: '2021-04-02 00:13:29+00',
+      fullPoints: 100,
+    });
+
+    await Content.create({
+      user_id: 1,
+      class_room_id: 2,
+      content_type_id: 3,
+      title: 'Material 1',
+      description:
+        'Material 1 Material 1 Material 1 Material 1 Material 1 Material 1 Material 1 Material 1',
     });
   }
 }

@@ -64,7 +64,6 @@ class ContentController {
         .fetch();
 
       return response.status(200).json(activities);
-
     } catch (err) {
       return response.status(404).json([
         {
