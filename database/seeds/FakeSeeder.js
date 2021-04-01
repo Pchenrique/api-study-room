@@ -49,6 +49,7 @@ class FakeSeeder {
 
     // create classroom test
     await ClassRoom.create({
+      user_id: 1,
       title: 'POO',
       code: '123ABC',
       description: 'Programação Orientada a Objetos',
@@ -56,6 +57,7 @@ class FakeSeeder {
     });
 
     await ClassRoom.create({
+      user_id: 1,
       title: 'PDI',
       code: '123ABD',
       description: 'Processamento Digital de Imagem',
@@ -63,6 +65,7 @@ class FakeSeeder {
     });
 
     await ClassRoom.create({
+      user_id: 1,
       title: 'CAA',
       code: '123ABE',
       description: 'Construção e analise de algoritmos',
@@ -93,16 +96,16 @@ class FakeSeeder {
     });
 
     await Content.create({
-      user_id: 1,
+      user_id: 2,
       class_room_id: 2,
       content_type_id: 1,
-      title: 'Aula open 2',
+      title: 'Aula de programação',
       description:
-        'Deslegitimou a relativação das mulheres trans infligindo sentimentos de dor na alma dos menos privilegiados. Se aproveitou do discurso de seus iguais, silenciados pela heteronormatividade patriarcal para propagar inverdades, alvejou a militância da luta anti-colonialista cujos fenótipos nunca serão sobrepujados em detrimento dos negros, tirou o contexto da reparação histórica há tanto tempo necessária sendo contraproducente com quem é diferente de você. Diminutizou as lamúrias do homem negro convocado ao desejo de se autosabotar dos gays e não-binários.',
+        'Professor quando vai ser a aula de logica de programação do dia 2 de outubro.',
     });
 
     await Content.create({
-      user_id: 1,
+      user_id: 2,
       class_room_id: 2,
       content_type_id: 1,
       title: 'Aula open 3',
