@@ -9,6 +9,7 @@ class HomeworkResponseSchema extends Schema {
       table.increments();
       table
         .integer('homework_id')
+        .notNullable()
         .unsigned()
         .references('id')
         .inTable('homework')
@@ -16,12 +17,13 @@ class HomeworkResponseSchema extends Schema {
         .onDelete('CASCADE');
       table
         .integer('user_id')
+        .notNullable()
         .unsigned()
         .references('id')
         .inTable('users')
         .onUpdate('CASCADE');
       table.datetime('deliveryDate').notNullable();
-      table.float('note').notNullable();
+      table.float('note').default(0).notNullable();
       table.timestamps();
     });
   }

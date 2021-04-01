@@ -9,6 +9,7 @@ class ResponseAttachmentSchema extends Schema {
       table.increments();
       table
         .integer('homework_response_id')
+        .notNullable()
         .unsigned()
         .references('id')
         .inTable('homework_responses')

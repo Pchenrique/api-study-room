@@ -9,6 +9,7 @@ class HomeworkSchema extends Schema {
       table.increments();
       table
         .integer('content_id')
+        .notNullable()
         .unsigned()
         .references('id')
         .inTable('contents')

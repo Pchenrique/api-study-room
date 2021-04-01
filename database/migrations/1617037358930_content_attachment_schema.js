@@ -9,10 +9,12 @@ class ContentAttachmentSchema extends Schema {
       table.increments();
       table
         .integer('content_id')
+        .notNullable()
         .unsigned()
         .references('id')
         .inTable('contents')
-        .onUpdate('CASCADE');
+        .onUpdate('CASCADE')
+        .onDelete('CASCADE');
       table.string('url', 100).notNullable();
       table.timestamps();
     });
