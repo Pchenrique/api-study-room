@@ -9,18 +9,22 @@ class ContentSchema extends Schema {
       table.increments();
       table
         .integer('user_id')
+        .notNullable()
         .unsigned()
         .references('id')
         .inTable('users')
         .onUpdate('CASCADE');
       table
         .integer('class_room_id')
+        .notNullable()
         .unsigned()
         .references('id')
         .inTable('class_rooms')
-        .onUpdate('CASCADE');
+        .onUpdate('CASCADE')
+        .onDelete('CASCADE');
       table
         .integer('content_type_id')
+        .notNullable()
         .unsigned()
         .references('id')
         .inTable('content_types')

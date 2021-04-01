@@ -9,6 +9,7 @@ class CommentsContentSchema extends Schema {
       table.increments();
       table
         .integer('user_id')
+        .notNullable()
         .unsigned()
         .references('id')
         .inTable('users')
@@ -16,6 +17,7 @@ class CommentsContentSchema extends Schema {
         .onDelete('CASCADE');
       table
         .integer('content_id')
+        .notNullable()
         .unsigned()
         .references('id')
         .inTable('contents')

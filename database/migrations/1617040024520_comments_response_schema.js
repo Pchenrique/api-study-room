@@ -9,6 +9,7 @@ class CommentsResponseSchema extends Schema {
       table.increments();
       table
         .integer('homework_response_id')
+        .notNullable()
         .unsigned()
         .references('id')
         .inTable('homework_responses')
@@ -16,6 +17,7 @@ class CommentsResponseSchema extends Schema {
         .onDelete('CASCADE');
       table
         .integer('user_id')
+        .notNullable()
         .unsigned()
         .references('id')
         .inTable('users')

@@ -4,12 +4,16 @@
 const Model = use('Model');
 
 class Content extends Model {
+  user() {
+    return this.belongsTo('App/Models/User');
+  }
+
   contentType() {
     return this.belongsTo('App/Models/ContentType');
   }
 
   contentAttachments() {
-    return this.hasMany('App/Models/ContentAttachments');
+    return this.hasMany('App/Models/ContentAttachment');
   }
 
   commentsContents() {
