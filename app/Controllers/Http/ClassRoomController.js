@@ -29,6 +29,55 @@ class ClassRoomController {
   }
 
   /**
+   * Show a list of all classrooms.
+   * GET classrooms
+   *
+   * @param {object} ctx
+   * @param {Request} ctx.request
+   * @param {Response} ctx.response
+   * @param {View} ctx.view
+   */
+  async show({ params, response, auth }) {
+    const { classroomId } = params;
+    const { user } = auth;
+
+    try {
+      const classroom = await ClassRoom.findOrFail(classroomId);
+
+      const classroomsParticip = await user.classRooms().fetch();
+      const rooms = classroomsParticip.toJSON();
+
+      let confirmParticipation = false;
+
+      rooms.forEach((roomLine) => {
+        if (roomLine.id === classroom.id) {
+          confirmParticipation = true;
+        }
+      });
+
+      if (!confirmParticipation) {
+        return response.status(404).json([
+          {
+            message: 'classroom not found',
+            field: 'classroom',
+            validation: 'not found',
+          },
+        ]);
+      }
+
+      return response.status(200).json(classroom);
+    } catch (err) {
+      return response.status(404).json([
+        {
+          message: 'classroom not found',
+          field: 'classroom',
+          validation: 'not found',
+        },
+      ]);
+    }
+  }
+
+  /**
    * Create/save a new classroom.
    * POST classrooms
    *
