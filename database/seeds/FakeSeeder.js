@@ -28,6 +28,9 @@ const Content = use('App/Models/Content');
 /** @type {typeof import('@adonisjs/lucid/src/Lucid/Model')} */
 const Homework = use('App/Models/Homework');
 
+/** @type {typeof import('@adonisjs/lucid/src/Lucid/Model')} */
+const ClassRoomUser = use('App/Models/ClassRoomUser');
+
 class FakeSeeder {
   async run() {
     // create user student
@@ -70,6 +73,27 @@ class FakeSeeder {
       code: '123ABE',
       description: 'Construção e analise de algoritmos',
       avatar: null,
+    });
+
+    await ClassRoomUser.create({
+      is_teacher: true,
+      is_owner: true,
+      user_id: 1,
+      class_room_id: 1,
+    });
+
+    await ClassRoomUser.create({
+      is_teacher: true,
+      is_owner: true,
+      user_id: 1,
+      class_room_id: 2,
+    });
+
+    await ClassRoomUser.create({
+      is_teacher: true,
+      is_owner: true,
+      user_id: 1,
+      class_room_id: 3,
     });
 
     // create types communications
