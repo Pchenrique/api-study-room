@@ -5,6 +5,7 @@ const { randomBytes } = use('crypto');
 const { promisify } = use('util');
 const Env = use('Env');
 const Mail = use('Mail');
+const Drive = use('Drive');
 
 /** @type {typeof import('@adonisjs/lucid/src/Lucid/Model')} */
 const User = use('App/Models/User');
@@ -79,6 +80,32 @@ class UserController {
     });
 
     return response.status(201).json(user);
+  }
+
+  async update({ auth, request, response }) {
+    const avatar = request.file('avatar');
+    const { user } = auth;
+
+    const random = await promisify(randomBytes)(14);
+    const tokenImg = await random.toString('hex');
+
+    await avatar.move(Helpers.tmpPath('uploads'), {
+      name: `${tokenImg}_${new Date().getTime()}_profile.${avatar.subtype}`,
+    });
+
+    if (!avatar.moved()) {
+      return avatar.error();
+    }
+
+    if (user.avatar) {
+      const oldFileTmp = user.avatar;
+      await Drive.delete(Helpers.tmpPath(`uploads/${oldFileTmp}`));
+    }
+
+    user.avatar = avatar.fileName;
+    await user.save();
+
+    return response.status(200).json(user);
   }
 }
 
