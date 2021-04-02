@@ -41,6 +41,10 @@ Route.post('user', 'UserController.store').validator('user/Store');
 Route.get('classroom', 'ClassRoomController.index').middleware(['auth']);
 
 // Routes ClassRoom
+Route.get('classroom/:classroomId', 'ClassRoomController.show').middleware([
+  'auth',
+]);
+
 Route.post('classroom/enter', 'ClassRoomController.enterRoom')
   .middleware(['auth'])
   .validator('classroom/EnterRoom');

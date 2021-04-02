@@ -69,7 +69,7 @@ class ContentController {
       return response.status(404).json([
         {
           message: 'classroom not found',
-          fiels: 'classroom',
+          field: 'classroom',
           validation: 'not found',
         },
       ]);
@@ -186,7 +186,7 @@ class ContentController {
       return response.status(404).json([
         {
           message: 'classroom not found',
-          fiels: 'classroom',
+          field: 'classroom',
           validation: 'not found',
         },
       ]);
