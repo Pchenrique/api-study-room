@@ -37,44 +37,11 @@ class ClassRoomController {
    * @param {Response} ctx.response
    * @param {View} ctx.view
    */
-  async show({ params, response, auth }) {
+  async show({ params, response }) {
     const { classroomId } = params;
-    const { user } = auth;
 
-    try {
-      const classroom = await ClassRoom.findOrFail(classroomId);
-
-      const classroomsParticip = await user.classRooms().fetch();
-      const rooms = classroomsParticip.toJSON();
-
-      let confirmParticipation = false;
-
-      rooms.forEach((roomLine) => {
-        if (roomLine.id === classroom.id) {
-          confirmParticipation = true;
-        }
-      });
-
-      if (!confirmParticipation) {
-        return response.status(404).json([
-          {
-            message: 'classroom not found',
-            field: 'classroom',
-            validation: 'not found',
-          },
-        ]);
-      }
-
-      return response.status(200).json(classroom);
-    } catch (err) {
-      return response.status(404).json([
-        {
-          message: 'classroom not found',
-          field: 'classroom',
-          validation: 'not found',
-        },
-      ]);
-    }
+    const classroom = await ClassRoom.find(classroomId);
+    return response.status(200).json(classroom);
   }
 
   /**
@@ -127,52 +94,20 @@ class ClassRoomController {
    * @param {Response} ctx.response
    * @param {View} ctx.view
    */
-  async listStudent({ params, response, auth }) {
+  async listStudent({ params, response }) {
     const { classroomId } = params;
-    const { user } = auth;
 
-    try {
-      const classroom = await ClassRoom.findOrFail(classroomId);
+    const classroom = await ClassRoom.findOrFail(classroomId);
 
-      const classroomsParticip = await user.classRooms().fetch();
-      const rooms = classroomsParticip.toJSON();
+    await classroom.load('users', (builder) => {
+      builder.select('id', 'name', 'email').orderBy('name', 'asc');
+    });
 
-      let confirmParticipation = false;
+    const classroomJson = classroom.toJSON();
+    const total = classroomJson.users.length;
+    const classroomJsonFinal = { ...classroomJson, total_student: total };
 
-      rooms.forEach((roomLine) => {
-        if (roomLine.id === classroom.id) {
-          confirmParticipation = true;
-        }
-      });
-
-      if (!confirmParticipation) {
-        return response.status(409).json([
-          {
-            message: 'Student does not participate in this classroom',
-            field: 'classroom',
-            validation: 'participate',
-          },
-        ]);
-      }
-
-      await classroom.load('users', (builder) => {
-        builder.select('id', 'name', 'email').orderBy('name', 'asc');
-      });
-
-      const classroomJson = classroom.toJSON();
-      const total = classroomJson.users.length;
-      const classroomJsonFinal = { ...classroomJson, total_student: total };
-
-      return response.status(200).json(classroomJsonFinal);
-    } catch (err) {
-      return response.status(404).json([
-        {
-          message: 'classroom not found',
-          field: 'classroom',
-          validation: 'not found',
-        },
-      ]);
-    }
+    return response.status(200).json(classroomJsonFinal);
   }
 
   /**
@@ -193,45 +128,14 @@ class ClassRoomController {
    * @param {Request} ctx.request
    * @param {Response} ctx.response
    */
-  async leaveRoom({ params, response, auth }) {
+  async leaveRoom({ params, auth }) {
     const { classroomId } = params;
     const { user } = auth;
 
-    try {
-      const room = await ClassRoom.findOrFail(classroomId);
-      const classroomsParticip = await user.classRooms().fetch();
+    const room = await ClassRoom.findOrFail(classroomId);
+    const roomCode = room.toJSON();
 
-      const rooms = classroomsParticip.toJSON();
-      const roomCode = room.toJSON();
-
-      let confirmParticipation = false;
-
-      rooms.forEach((roomLine) => {
-        if (roomLine.id === roomCode.id) {
-          confirmParticipation = true;
-        }
-      });
-
-      if (!confirmParticipation) {
-        return response.status(409).json([
-          {
-            message: 'Student does not participate in this classroom',
-            field: 'classroom',
-            validation: 'participate',
-          },
-        ]);
-      }
-
-      await user.classRooms().detach(roomCode.id);
-    } catch (err) {
-      return response.status(404).json([
-        {
-          message: 'classroom not found',
-          field: 'classroom',
-          validation: 'not found',
-        },
-      ]);
-    }
+    await user.classRooms().detach(roomCode.id);
   }
 }
 

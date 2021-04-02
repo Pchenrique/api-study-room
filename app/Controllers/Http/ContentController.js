@@ -24,56 +24,19 @@ class ContentController {
    * @param {Request} ctx.request
    * @param {Response} ctx.response
    */
-  async listActivities({ params, response, auth }) {
+  async listActivities({ params, response }) {
     const { classroomId } = params;
-    const { user } = auth;
 
     const contentType = await ContentType.findBy('name', 'Activity');
 
-    try {
-      const room = await ClassRoom.findOrFail(classroomId);
-      const classroomsParticip = await user.classRooms().fetch();
+    const activities = await Content.query()
+      .where('class_room_id', classroomId)
+      .where('content_type_id', contentType.id)
+      .with('homework')
+      .with('user')
+      .fetch();
 
-      const rooms = classroomsParticip.toJSON();
-      const roomCode = room.toJSON();
-
-      let confirmParticipation = false;
-
-      rooms.forEach((roomLine) => {
-        if (roomLine.id === roomCode.id) {
-          confirmParticipation = true;
-        }
-      });
-
-      if (!confirmParticipation) {
-        return response.status(409).json([
-          {
-            message: 'Student does not participate in this classroom',
-            field: 'classroom',
-            validation: 'participate',
-          },
-        ]);
-      }
-
-      const activities = await Content.query()
-        .where('class_room_id', classroomId)
-        .where('content_type_id', contentType.id)
-        .with('user')
-        .with('homework')
-        .with('contentAttachments')
-        .with('commentsContents.user')
-        .fetch();
-
-      return response.status(200).json(activities);
-    } catch (err) {
-      return response.status(404).json([
-        {
-          message: 'classroom not found',
-          field: 'classroom',
-          validation: 'not found',
-        },
-      ]);
-    }
+    return response.status(200).json(activities);
   }
 
   /**
@@ -84,55 +47,20 @@ class ContentController {
    * @param {Request} ctx.request
    * @param {Response} ctx.response
    */
-  async listComunications({ params, response, auth }) {
+  async listComunications({ params, response }) {
     const { classroomId } = params;
-    const { user } = auth;
 
     const contentType = await ContentType.findBy('name', 'Communication');
 
-    try {
-      const room = await ClassRoom.findOrFail(classroomId);
-      const classroomsParticip = await user.classRooms().fetch();
+    const comunications = await Content.query()
+      .where('class_room_id', classroomId)
+      .where('content_type_id', contentType.id)
+      .with('user')
+      .with('contentAttachments')
+      .with('commentsContents.user')
+      .fetch();
 
-      const rooms = classroomsParticip.toJSON();
-      const roomCode = room.toJSON();
-
-      let confirmParticipation = false;
-
-      rooms.forEach((roomLine) => {
-        if (roomLine.id === roomCode.id) {
-          confirmParticipation = true;
-        }
-      });
-
-      if (!confirmParticipation) {
-        return response.status(409).json([
-          {
-            message: 'Student does not participate in this classroom',
-            field: 'classroom',
-            validation: 'participate',
-          },
-        ]);
-      }
-
-      const comunications = await Content.query()
-        .where('class_room_id', classroomId)
-        .where('content_type_id', contentType.id)
-        .with('user')
-        .with('contentAttachments')
-        .with('commentsContents.user')
-        .fetch();
-
-      return response.status(200).json(comunications);
-    } catch (err) {
-      return response.status(404).json([
-        {
-          message: 'classroom not found',
-          fiels: 'classroom',
-          validation: 'not found',
-        },
-      ]);
-    }
+    return response.status(200).json(comunications);
   }
 
   /**
@@ -143,54 +71,19 @@ class ContentController {
    * @param {Request} ctx.request
    * @param {Response} ctx.response
    */
-  async listMaterial({ params, response, auth }) {
+  async listMaterial({ params, response }) {
     const { classroomId } = params;
-    const { user } = auth;
 
     const contentType = await ContentType.findBy('name', 'Material');
 
-    try {
-      const room = await ClassRoom.findOrFail(classroomId);
-      const classroomsParticip = await user.classRooms().fetch();
+    const materiais = await Content.query()
+      .where('class_room_id', classroomId)
+      .where('content_type_id', contentType.id)
+      .with('user')
+      .with('contentAttachments')
+      .fetch();
 
-      const rooms = classroomsParticip.toJSON();
-      const roomCode = room.toJSON();
-
-      let confirmParticipation = false;
-
-      rooms.forEach((roomLine) => {
-        if (roomLine.id === roomCode.id) {
-          confirmParticipation = true;
-        }
-      });
-
-      if (!confirmParticipation) {
-        return response.status(409).json([
-          {
-            message: 'Student does not participate in this classroom',
-            field: 'classroom',
-            validation: 'participate',
-          },
-        ]);
-      }
-
-      const materiais = await Content.query()
-        .where('class_room_id', classroomId)
-        .where('content_type_id', contentType.id)
-        .with('user')
-        .with('contentAttachments')
-        .fetch();
-
-      return response.status(200).json(materiais);
-    } catch (err) {
-      return response.status(404).json([
-        {
-          message: 'classroom not found',
-          field: 'classroom',
-          validation: 'not found',
-        },
-      ]);
-    }
+    return response.status(200).json(materiais);
   }
 
   /**
@@ -201,7 +94,7 @@ class ContentController {
    * @param {Request} ctx.request
    * @param {Response} ctx.response
    */
-  async store({ request, response }) { }
+  async store({ request, response }) {}
 
   /**
    * Display a single content.
@@ -211,7 +104,32 @@ class ContentController {
    * @param {Request} ctx.request
    * @param {Response} ctx.response
    */
-  async show({ params, request, response }) { }
+  async showActivity({ params, response }) {
+    const { contentId } = params;
+
+    const activity = await Content.findOrFail(contentId);
+
+    const contentType = await ContentType.find(activity.content_type_id);
+
+    if (contentType.name !== 'Activity') {
+      return response.status(403).json([
+        {
+          message: 'Content is not an activity',
+          field: 'activity',
+          validation: 'content',
+        },
+      ]);
+    }
+
+    await activity.loadMany([
+      'user',
+      'homework',
+      'contentAttachments',
+      'commentsContents',
+    ]);
+
+    return response.status(200).json(activity);
+  }
 
   /**
    * Update content details.
@@ -221,7 +139,7 @@ class ContentController {
    * @param {Request} ctx.request
    * @param {Response} ctx.response
    */
-  async update({ params, request, response }) { }
+  async update({ params, request, response }) {}
 
   /**
    * Delete a content with id.
@@ -231,7 +149,7 @@ class ContentController {
    * @param {Request} ctx.request
    * @param {Response} ctx.response
    */
-  async destroy({ params, request, response }) { }
+  async destroy({ params, request, response }) {}
 }
 
 module.exports = ContentController;

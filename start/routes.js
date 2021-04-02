@@ -37,12 +37,17 @@ Route.put('checkEmail', 'CheckEmailController.checkEmail').validator(
 // routes users
 Route.post('user', 'UserController.store').validator('user/Store');
 
+Route.put('user', 'UserController.update')
+  .middleware(['auth'])
+  .validator('user/Update');
+
 // Routes ClassRoom
 Route.get('classroom', 'ClassRoomController.index').middleware(['auth']);
 
 // Routes ClassRoom
 Route.get('classroom/:classroomId', 'ClassRoomController.show').middleware([
   'auth',
+  'verifyClassroom',
 ]);
 
 Route.post('classroom/enter', 'ClassRoomController.enterRoom')
@@ -52,25 +57,30 @@ Route.post('classroom/enter', 'ClassRoomController.enterRoom')
 Route.delete(
   'classroom/leaveRoom/:classroomId',
   'ClassRoomController.leaveRoom'
-).middleware(['auth']);
+).middleware(['auth', 'verifyClassroom']);
 
 Route.get(
   'listStudent/:classroomId',
   'ClassRoomController.listStudent'
-).middleware(['auth']);
+).middleware(['auth', 'verifyClassroom']);
 
 // Routes Content
 Route.get(
   'listComunications/:classroomId',
   'ContentController.listComunications'
-).middleware(['auth']);
+).middleware(['auth', 'verifyClassroom']);
 
 Route.get(
   'listActivities/:classroomId',
   'ContentController.listActivities'
-).middleware(['auth']);
+).middleware(['auth', 'verifyClassroom']);
 
 Route.get(
   'listMaterial/:classroomId',
   'ContentController.listMaterial'
-).middleware(['auth']);
+).middleware(['auth', 'verifyClassroom']);
+
+Route.get(
+  'showActivity/:classroomId/:contentId',
+  'ContentController.showActivity'
+).middleware(['auth', 'verifyClassroom']);
