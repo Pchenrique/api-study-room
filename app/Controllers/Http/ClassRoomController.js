@@ -82,9 +82,40 @@ class ClassRoomController {
     const { classroomId } = params;
     const { user } = auth;
 
-    const classroom = await ClassRoom.find(classroomId);
+    try {
+      const classroom = await ClassRoom.findOrFail(classroomId);
 
-    if (!classroom) {
+      const classroomsParticip = await user.classRooms().fetch();
+      const rooms = classroomsParticip.toJSON();
+
+      let confirmParticipation = false;
+
+      rooms.forEach((roomLine) => {
+        if (roomLine.id === classroom.id) {
+          confirmParticipation = true;
+        }
+      });
+
+      if (!confirmParticipation) {
+        return response.status(409).json([
+          {
+            message: 'Student does not participate in this classroom',
+            field: 'classroom',
+            validation: 'participate',
+          },
+        ]);
+      }
+
+      await classroom.load('users', (builder) => {
+        builder.select('id', 'name', 'email').orderBy('name', 'asc');
+      });
+
+      const classroomJson = classroom.toJSON();
+      const total = classroomJson.users.length;
+      const classroomJsonFinal = { ...classroomJson, total_student: total };
+
+      return response.status(200).json(classroomJsonFinal);
+    } catch (err) {
       return response.status(404).json([
         {
           message: 'classroom not found',
@@ -93,37 +124,6 @@ class ClassRoomController {
         },
       ]);
     }
-
-    const classroomsParticip = await user.classRooms().fetch();
-    const rooms = classroomsParticip.toJSON();
-
-    let confirmParticipation = false;
-
-    rooms.forEach((roomLine) => {
-      if (roomLine.id === classroom.id) {
-        confirmParticipation = true;
-      }
-    });
-
-    if (!confirmParticipation) {
-      return response.status(409).json([
-        {
-          message: 'Student does not participate in this classroom',
-          field: 'classroom',
-          validation: 'participate',
-        },
-      ]);
-    }
-
-    await classroom.load('users', (builder) => {
-      builder.select('name', 'email').orderBy('name', 'asc');
-    });
-
-    const classroomJson = classroom.toJSON();
-    const total = classroomJson.users.length;
-    const classroomJsonFinal = { ...classroomJson, total_student: total };
-
-    return response.status(200).json(classroomJsonFinal);
   }
 
   /**
