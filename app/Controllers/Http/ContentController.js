@@ -125,7 +125,7 @@ class ContentController {
       'user',
       'homework',
       'contentAttachments',
-      'commentsContents',
+      'commentsContents.user',
     ]);
 
     return response.status(200).json(activity);
