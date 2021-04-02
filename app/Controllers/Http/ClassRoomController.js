@@ -97,10 +97,10 @@ class ClassRoomController {
   async listStudent({ params, response }) {
     const { classroomId } = params;
 
-    const classroom = await ClassRoom.findOrFail(classroomId);
+    const classroom = await ClassRoom.find(classroomId);
 
     await classroom.load('users', (builder) => {
-      builder.select('id', 'name', 'email').orderBy('name', 'asc');
+      builder.select('id', 'name', 'email', 'avatar').orderBy('name', 'asc');
     });
 
     const classroomJson = classroom.toJSON();
