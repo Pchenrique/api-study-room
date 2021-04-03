@@ -10,7 +10,7 @@ const Content = use('App/Models/Content');
 const ContentType = use('App/Models/ContentType');
 
 /** @type {typeof import('@adonisjs/lucid/src/Lucid/Model')} */
-const ClassRoom = use('App/Models/ClassRoom');
+const CommentsContent = use('App/Models/CommentsContent');
 
 /**
  * Resourceful controller for interacting with contents
@@ -94,7 +94,34 @@ class ContentController {
    * @param {Request} ctx.request
    * @param {Response} ctx.response
    */
-  async store({ request, response }) {}
+  async storeComment({ params, request, response, auth }) {
+    const { contentId } = params;
+    const data = request.only('comment');
+    const { user } = auth;
+
+    const content = await Content.find(contentId);
+    await content.load('contentType');
+
+    const contentJson = content.toJSON();
+
+    if (contentJson.contentType.name === 'Material') {
+      return response.status(403).json([
+        {
+          message: 'Material content cannot have comments',
+          field: 'content',
+          validation: 'content',
+        },
+      ]);
+    }
+
+    const commentsContent = await CommentsContent.create({
+      user_id: user.id,
+      content_id: contentId,
+      ...data,
+    });
+
+    return response.status(201).json(commentsContent);
+  }
 
   /**
    * Display a single content.
