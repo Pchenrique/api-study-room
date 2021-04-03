@@ -44,7 +44,6 @@ Route.put('user', 'UserController.update')
 // Routes ClassRoom
 Route.get('classroom', 'ClassRoomController.index').middleware(['auth']);
 
-// Routes ClassRoom
 Route.get('classroom/:classroomId', 'ClassRoomController.show').middleware([
   'auth',
   'verifyClassroom',
@@ -65,22 +64,32 @@ Route.get(
 ).middleware(['auth', 'verifyClassroom']);
 
 // Routes Content
+Route.post(
+  'storeComment/:classroomId/:contentId',
+  'ContentController.storeComment'
+)
+  .middleware(['auth', 'verifyClassroom'])
+  .validator('content/StoreComment');
+
+// routes communications
 Route.get(
   'listComunications/:classroomId',
   'ContentController.listComunications'
 ).middleware(['auth', 'verifyClassroom']);
 
+// routes activities
 Route.get(
   'listActivities/:classroomId',
   'ContentController.listActivities'
 ).middleware(['auth', 'verifyClassroom']);
 
 Route.get(
-  'listMaterial/:classroomId',
-  'ContentController.listMaterial'
-).middleware(['auth', 'verifyClassroom']);
-
-Route.get(
   'showActivity/:classroomId/:contentId',
   'ContentController.showActivity'
+).middleware(['auth', 'verifyClassroom']);
+
+// routes materiais
+Route.get(
+  'listMaterial/:classroomId',
+  'ContentController.listMaterial'
 ).middleware(['auth', 'verifyClassroom']);
