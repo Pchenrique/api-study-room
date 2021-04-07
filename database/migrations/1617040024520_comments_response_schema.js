@@ -8,11 +8,11 @@ class CommentsResponseSchema extends Schema {
     this.create('comments_responses', (table) => {
       table.increments();
       table
-        .integer('homework_response_id')
+        .integer('content_id')
         .notNullable()
         .unsigned()
         .references('id')
-        .inTable('homework_responses')
+        .inTable('contents')
         .onUpdate('CASCADE')
         .onDelete('CASCADE');
       table

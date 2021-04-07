@@ -8,8 +8,8 @@ class CommentsResponse extends Model {
     return this.belongsTo('App/Models/User');
   }
 
-  homeworkResponse() {
-    return this.belongsTo('App/Models/HomeworkResponse');
+  content() {
+    return this.belongsTo('App/Models/Content');
   }
 }
 
