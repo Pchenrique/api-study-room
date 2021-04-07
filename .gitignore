@@ -2,9 +2,9 @@
 node_modules
 
 # Adonis directory for storing tmp files
-tmp/*/*
-!tmp/uploads/placeholder_profile.png
-!tmp/uploads/placeholder_classroom.png
+# tmp/*/*
+# !tmp/uploads/placeholder_profile.png
+# !tmp/uploads/placeholder_classroom.png
 
 # Environment variables, never commit this file
 .env
