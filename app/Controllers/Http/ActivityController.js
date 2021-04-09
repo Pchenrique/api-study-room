@@ -84,7 +84,7 @@ class ActivityController {
       'user',
       'homework',
       'contentAttachments',
-      'commentsContents.users',
+      'commentsContents.user',
     ]);
 
     // const classroom = await ClassRoom.find(activity.class_room_id);
