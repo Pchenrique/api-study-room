@@ -23,6 +23,10 @@ class Content extends Model {
   homework() {
     return this.hasOne('App/Models/Homework');
   }
+
+  commentsResponse() {
+    return this.hasMany('App/Models/CommentsResponse');
+  }
 }
 
 module.exports = Content;

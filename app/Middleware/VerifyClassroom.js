@@ -73,14 +73,14 @@ class VerifyClassroom {
 
       await next();
     } catch (err) {
-      return response.status(401).json(err.message);
-      // return response.status(404).json([
-      //   {
-      //     message: 'classroom not found',
-      //     field: 'classroom',
-      //     validation: 'not found',
-      //   },
-      // ]);
+      // return response.status(401).json(err.message);
+      return response.status(404).json([
+        {
+          message: 'classroom not found',
+          field: 'classroom',
+          validation: 'not found',
+        },
+      ]);
     }
   }
 }

@@ -63,33 +63,50 @@ Route.get(
   'ClassRoomController.listStudent'
 ).middleware(['auth', 'verifyClassroom']);
 
-// Routes Content
-Route.post(
-  'storeComment/:classroomId/:contentId',
-  'ContentController.storeComment'
-)
-  .middleware(['auth', 'verifyClassroom'])
-  .validator('content/StoreComment');
-
-// routes communications
+// Routes communications
 Route.get(
   'listComunications/:classroomId',
-  'ContentController.listComunications'
+  'CommunicationController.listComunications'
 ).middleware(['auth', 'verifyClassroom']);
 
-// routes activities
+// Routes activities
 Route.get(
   'listActivities/:classroomId',
-  'ContentController.listActivities'
+  'ActivityController.listActivities'
 ).middleware(['auth', 'verifyClassroom']);
 
 Route.get(
   'showActivity/:classroomId/:contentId',
-  'ContentController.showActivity'
+  'ActivityController.showActivity'
 ).middleware(['auth', 'verifyClassroom']);
 
-// routes materiais
+// Routes materiais
 Route.get(
   'listMaterial/:classroomId',
-  'ContentController.listMaterial'
+  'MaterialController.listMaterial'
 ).middleware(['auth', 'verifyClassroom']);
+
+// Routes comments
+Route.post(
+  'storeComment/:classroomId/:contentId',
+  'CommentController.storeComment'
+)
+  .middleware(['auth', 'verifyClassroom'])
+  .validator('comment/StoreComment');
+
+Route.delete(
+  'destroyComment/:commentId',
+  'CommentController.destroyComment'
+).middleware('auth');
+
+Route.post(
+  'storeCommentPrivate/:classroomId/:contentId',
+  'CommentController.storeCommentPrivate'
+)
+  .middleware(['auth', 'verifyClassroom'])
+  .validator('comment/StoreComment');
+
+Route.delete(
+  'destroyCommentPrivate/:commentId',
+  'CommentController.destroyCommentPrivate'
+).middleware('auth');
