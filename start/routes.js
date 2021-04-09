@@ -98,3 +98,15 @@ Route.delete(
   'destroyComment/:commentId',
   'CommentController.destroyComment'
 ).middleware('auth');
+
+Route.post(
+  'storeCommentPrivate/:classroomId/:contentId',
+  'CommentController.storeCommentPrivate'
+)
+  .middleware(['auth', 'verifyClassroom'])
+  .validator('comment/StoreComment');
+
+Route.delete(
+  'destroyCommentPrivate/:commentId',
+  'CommentController.destroyCommentPrivate'
+).middleware('auth');

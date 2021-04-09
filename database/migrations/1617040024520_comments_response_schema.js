@@ -23,6 +23,13 @@ class CommentsResponseSchema extends Schema {
         .inTable('users')
         .onUpdate('CASCADE')
         .onDelete('CASCADE');
+      table
+        .integer('student_id')
+        .unsigned()
+        .references('id')
+        .inTable('users')
+        .onUpdate('CASCADE')
+        .onDelete('CASCADE');
       table.text('comment', 'longtext').notNullable();
       table.timestamps();
     });

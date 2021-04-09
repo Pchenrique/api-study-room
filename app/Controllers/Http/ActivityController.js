@@ -9,6 +9,12 @@ const Content = use('App/Models/Content');
 /** @type {typeof import('@adonisjs/lucid/src/Lucid/Model')} */
 const ContentType = use('App/Models/ContentType');
 
+/** @type {typeof import('@adonisjs/lucid/src/Lucid/Model')} */
+const CommentsResponse = use('App/Models/CommentsResponse');
+
+/** @type {typeof import('@adonisjs/lucid/src/Lucid/Model')} */
+const ClassRoom = use('App/Models/ClassRoom');
+
 /**
  * Resourceful controller for interacting with activities
  */
@@ -56,8 +62,9 @@ class ActivityController {
    * @param {Response} ctx.response
    * @param {View} ctx.view
    */
-  async showActivity({ params, response }) {
+  async showActivity({ params, response, auth }) {
     const { contentId } = params;
+    const { user } = auth;
 
     const activity = await Content.findOrFail(contentId);
 
@@ -77,15 +84,44 @@ class ActivityController {
       'user',
       'homework',
       'contentAttachments',
-      'commentsContents.user',
+      'commentsContents.users',
     ]);
 
-    return response.status(200).json(activity);
+    // const classroom = await ClassRoom.find(activity.class_room_id);
+    // await classroom.load('users', (builder) =>
+    //   builder.select('id', 'name', 'email', 'avatar').where('is_teacher', true)
+    // );
+
+    // const classroomJson = classroom.toJSON();
+
+    const commentsResponse = await CommentsResponse.query()
+      .where('content_id', activity.id)
+      .where('user_id', user.id)
+      .with('user', (builder) =>
+        builder.select('id', 'name', 'email', 'avatar')
+      )
+      .fetch();
+
+    const commentsResponseJson = commentsResponse.toJSON();
+
+    const line = await CommentsResponse.query()
+      .where('content_id', activity.id)
+      .where('user_id', '<>', user.id)
+      .where('student_id', user.id)
+      .with('user', (builder) =>
+        builder.select('id', 'name', 'email', 'avatar')
+      )
+      .fetch();
+
+    const lineJson = line.toJSON();
+    const commentsPrivate = [...commentsResponseJson, ...lineJson];
+
+    return response.status(200).json({ activity, commentsPrivate });
   }
 
   /**
    * Update activity details.
-   * PUT or PATCH activities/:id
+   * PUT or PATCH activities/:ids
    *
    * @param {object} ctx
    * @param {Request} ctx.request
