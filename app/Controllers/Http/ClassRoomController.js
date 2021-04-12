@@ -23,7 +23,15 @@ class ClassRoomController {
   async index({ response, auth }) {
     const { user } = auth;
 
-    const classrooms = await user.classRooms().orderBy('id', 'desc').fetch();
+    const classrooms = await user
+      .classRooms()
+      .where('is_teacher', false)
+      .orderBy('id', 'desc')
+      .fetch();
+
+    // await classroom.load(users, (builder) => {
+
+    // });
 
     return response.status(200).json({ classrooms });
   }
