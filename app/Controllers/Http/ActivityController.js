@@ -38,6 +38,7 @@ class ActivityController {
       .where('content_type_id', contentType.id)
       .with('homework')
       .with('user')
+      .orderBy('created_at', 'desc')
       .fetch();
 
     return response.status(200).json(activities);
