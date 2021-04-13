@@ -33,6 +33,7 @@ class CommunicationController {
       .with('user')
       .with('contentAttachments')
       .with('commentsContents.user')
+      .orderBy('created_at', 'desc')
       .fetch();
 
     return response.status(200).json(comunications);

@@ -32,6 +32,7 @@ class MaterialController {
       .where('content_type_id', contentType.id)
       .with('user')
       .with('contentAttachments')
+      .orderBy('created_at', 'desc')
       .fetch();
 
     return response.status(200).json(materiais);
