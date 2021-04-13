@@ -46,7 +46,23 @@ class CommunicationController {
    * @param {Request} ctx.request
    * @param {Response} ctx.response
    */
-  async store({ request, response }) {}
+  async store({ params, request, response, auth }) {
+    const data = request.only(['title', 'description']);
+    // eslint-disable-next-line camelcase
+    const { classroomId } = params;
+    const { user } = auth;
+
+    const contentType = await ContentType.findBy('name', 'Communication');
+
+    const communication = await Content.create({
+      class_room_id: classroomId,
+      user_id: user.id,
+      content_type_id: contentType.id,
+      ...data,
+    });
+
+    return response.status(201).json(communication);
+  }
 
   /**
    * Display a single communication.

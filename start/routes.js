@@ -69,6 +69,10 @@ Route.get(
   'CommunicationController.listComunications'
 ).middleware(['auth', 'verifyClassroom']);
 
+Route.post('communication/:classroomId', 'CommunicationController.store')
+  .middleware(['auth', 'verifyClassroom'])
+  .validator('communication/Store');
+
 // Routes activities
 Route.get(
   'listActivities/:classroomId',
