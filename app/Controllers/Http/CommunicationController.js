@@ -3,6 +3,11 @@
 /** @typedef {import('@adonisjs/framework/src/Request')} Request */
 /** @typedef {import('@adonisjs/framework/src/Response')} Response */
 
+const Drive = use('Drive');
+const Helpers = use('Helpers');
+const { randomBytes } = use('crypto');
+const { promisify } = use('util');
+
 /** @type {typeof import('@adonisjs/lucid/src/Lucid/Model')} */
 const Content = use('App/Models/Content');
 
@@ -49,7 +54,7 @@ class CommunicationController {
    */
   async store({ params, request, response, auth }) {
     const data = request.only(['title', 'description']);
-    // eslint-disable-next-line camelcase
+    const files = request.file('files');
     const { classroomId } = params;
     const { user } = auth;
 
@@ -62,6 +67,43 @@ class CommunicationController {
       ...data,
     });
 
+    if (files) {
+      const random = await promisify(randomBytes)(8);
+      const tokenFile = await random.toString('hex');
+      let iteracao = 0;
+
+      // eslint-disable-next-line no-return-assign
+      await files.moveAll(Helpers.tmpPath('uploads/communication'), (file) => ({
+        name: `${
+          communication.id
+        }_${tokenFile}_${new Date().getTime()}_${(iteracao += 1)}.${
+          file.subtype
+        }`,
+      }));
+
+      if (!files.movedAll()) {
+        const movedFiles = files.movedList();
+
+        await Promise.all(
+          movedFiles.map((file) => {
+            Drive.delete(Helpers.tmpPath(`uploads/${file.fileName}`));
+            return '';
+          })
+        );
+
+        return files.errors();
+      }
+
+      await Promise.all(
+        files
+          .movedList()
+          .map((file) =>
+            communication.contentAttachments().create({ url: file.fileName })
+          )
+      );
+    }
+
+    await communication.loadMany(['user', 'contentAttachments']);
     return response.status(201).json(communication);
   }
 
