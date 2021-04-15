@@ -5,6 +5,9 @@ node_modules
 tmp/*/*
 !tmp/uploads/placeholder_profile.png
 !tmp/uploads/placeholder_classroom.png
+!tmp/uploads/communication/
+tmp/uploads/communication/*
+
 
 # Environment variables, never commit this file
 .env
