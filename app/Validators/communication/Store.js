@@ -9,7 +9,7 @@ class communicationStore {
       description: 'required|string',
       files: 'array|max:9',
       'files.*':
-        'file|file_ext:png,jpg,jpeg,pdf,txt,mp4,zip,rar|file_size:100mb',
+        'file|file_ext:svg,ico,gif,png,jpg,jpeg,doc,docx,odt,pdf,wpd,xls,pptx,txt,wmv,mp4,mov,mkv,avi,mpg,mpeg,mp3,ogg,mid,wav,zip,rar,tar.gz,7z|file_size:1000mb',
     };
   }
 
