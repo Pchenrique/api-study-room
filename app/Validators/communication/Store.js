@@ -7,7 +7,7 @@ class communicationStore {
     return {
       title: 'required|string',
       description: 'required|string',
-      files: 'array|max:10',
+      files: 'array|max:9',
       'files.*':
         'file|file_ext:png,jpg,jpeg,pdf,txt,mp4,zip,rar|file_size:100mb',
     };

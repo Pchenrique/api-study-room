@@ -13,8 +13,8 @@ class ContentAttachment extends Model {
     return this.belongsTo('App/Models/Content');
   }
 
-  getAttachmentUrl({ url }) {
-    return `${Env.get('APP_URL')}/files/communication/${url}`;
+  getAttachmentUrl({ path }) {
+    return `${Env.get('APP_URL')}/files/communication/${path}`;
   }
 }
 

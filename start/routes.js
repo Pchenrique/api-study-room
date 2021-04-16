@@ -21,7 +21,7 @@ Route.post('auth', 'AuthController.authenticate').validator(
 );
 
 // Routes files
-Route.get('files/:file', 'FileController.show').middleware(['auth']);
+Route.get('files/:file', 'FileController.show');
 
 Route.get(
   'files/communication/:file',
@@ -78,6 +78,11 @@ Route.get(
 Route.post('communication/:classroomId', 'CommunicationController.store')
   .middleware(['auth', 'verifyClassroom'])
   .validator('communication/Store');
+
+Route.delete(
+  'communication/:communicationId',
+  'CommunicationController.destroy'
+).middleware(['auth']);
 
 // Routes activities
 Route.get(

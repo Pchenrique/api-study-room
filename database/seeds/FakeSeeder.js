@@ -50,6 +50,14 @@ class FakeSeeder {
       avatar: null,
     });
 
+    await User.create({
+      name: 'Johnny',
+      email: 'johnny@teste.com',
+      is_verify: true,
+      password: 'mudar123',
+      avatar: null,
+    });
+
     // create classroom test
     await ClassRoom.create({
       user_id: 1,
@@ -94,6 +102,20 @@ class FakeSeeder {
       is_owner: true,
       user_id: 1,
       class_room_id: 3,
+    });
+
+    await ClassRoomUser.create({
+      is_teacher: false,
+      is_owner: false,
+      user_id: 2,
+      class_room_id: 2,
+    });
+
+    await ClassRoomUser.create({
+      is_teacher: false,
+      is_owner: false,
+      user_id: 3,
+      class_room_id: 2,
     });
 
     // create types communications

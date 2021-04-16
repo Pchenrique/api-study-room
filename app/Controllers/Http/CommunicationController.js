@@ -3,6 +3,7 @@
 /** @typedef {import('@adonisjs/framework/src/Request')} Request */
 /** @typedef {import('@adonisjs/framework/src/Response')} Response */
 
+const Database = use('Database');
 const Drive = use('Drive');
 const Helpers = use('Helpers');
 const { randomBytes } = use('crypto');
@@ -53,58 +54,102 @@ class CommunicationController {
    * @param {Response} ctx.response
    */
   async store({ params, request, response, auth }) {
+    const trx = await Database.beginTransaction();
+
     const data = request.only(['title', 'description']);
     const files = request.file('files');
     const { classroomId } = params;
     const { user } = auth;
 
-    const contentType = await ContentType.findBy('name', 'Communication');
+    let namedfiles = [];
+    try {
+      const contentType = await ContentType.findBy('name', 'Communication');
 
-    const communication = await Content.create({
-      class_room_id: classroomId,
-      user_id: user.id,
-      content_type_id: contentType.id,
-      ...data,
-    });
+      const communication = await Content.create(
+        {
+          class_room_id: classroomId,
+          user_id: user.id,
+          content_type_id: contentType.id,
+          ...data,
+        },
+        trx
+      );
 
-    if (files) {
-      const random = await promisify(randomBytes)(8);
-      const tokenFile = await random.toString('hex');
-      let iteracao = 0;
+      if (files) {
+        const random = await promisify(randomBytes)(2);
+        const tokenFile = await random.toString('hex');
+        let iteracao = 0;
 
-      // eslint-disable-next-line no-return-assign
-      await files.moveAll(Helpers.tmpPath('uploads/communication'), (file) => ({
-        name: `${
-          communication.id
-        }_${tokenFile}_${new Date().getTime()}_${(iteracao += 1)}.${
-          file.subtype
-        }`,
-      }));
-
-      if (!files.movedAll()) {
-        const movedFiles = files.movedList();
-
-        await Promise.all(
-          movedFiles.map((file) => {
-            Drive.delete(Helpers.tmpPath(`uploads/${file.fileName}`));
-            return '';
+        // eslint-disable-next-line no-return-assign
+        await files.moveAll(
+          Helpers.tmpPath('uploads/communication'),
+          // eslint-disable-next-line no-return-assign
+          (file) => ({
+            name: `${
+              file.clientName
+            }_studyroom_${tokenFile}_${Date.now()}_${(iteracao += 1)}.${
+              file.subtype
+            }`,
           })
         );
 
-        return files.errors();
+        namedfiles = files.movedList();
+
+        if (!files.movedAll()) {
+          const movedFiles = files.movedList();
+
+          await Promise.all(
+            movedFiles.map((file) => {
+              Drive.delete(
+                Helpers.tmpPath(`uploads/communication/${file.fileName}`)
+              );
+              return '';
+            })
+          );
+
+          return files.errors();
+        }
+
+        await Promise.all(
+          files.movedList().map((file) =>
+            communication.contentAttachments().create(
+              {
+                path: file.fileName,
+                type: file.type,
+                extension: file.subtype,
+              },
+              trx
+            )
+          )
+        );
       }
 
-      await Promise.all(
-        files
-          .movedList()
-          .map((file) =>
-            communication.contentAttachments().create({ url: file.fileName })
-          )
-      );
-    }
+      await trx.commit();
+      await communication.loadMany(['user', 'contentAttachments'], null, trx);
+      return response.status(201).json(communication);
+    } catch (err) {
+      if (namedfiles) {
+        await Promise.all(
+          namedfiles.map((file) => {
+            Drive.delete(
+              Helpers.tmpPath(`uploads/communication/${file.fileName}`)
+            );
+            return '';
+          })
+        );
+      }
 
-    await communication.loadMany(['user', 'contentAttachments']);
-    return response.status(201).json(communication);
+      await trx.rollback();
+      // return response.status(401).json(err.message);
+      return response.status(404).json([
+        {
+          message:
+            'Something happened when trying to register a new announcement',
+          field: 'communication',
+          validation: 'communication',
+        },
+      ]);
+    }
   }
 
   /**
@@ -136,7 +181,51 @@ class CommunicationController {
    * @param {Request} ctx.request
    * @param {Response} ctx.response
    */
-  async destroy({ params, request, response }) {}
+  async destroy({ params, response, auth }) {
+    const { communicationId } = params;
+    const { user } = auth;
+
+    try {
+      const communication = await Content.findOrFail(communicationId);
+
+      if (user.id !== communication.user_id) {
+        return response.status(403).json([
+          {
+            message: 'Communication does not belong to this user',
+            field: 'communication',
+            validation: 'communication',
+          },
+        ]);
+      }
+
+      await communication.load('contentAttachments');
+
+      const communicationJson = communication.toJSON();
+      const files = communicationJson.contentAttachments;
+      // console.log(files);
+
+      if (files) {
+        await Promise.all(
+          files.map((file) => {
+            // console.log(file.url);
+            Drive.delete(Helpers.tmpPath(`uploads/communication/${file.path}`));
+            return '';
+          })
+        );
+      }
+
+      await communication.delete();
+    } catch (err) {
+      // return response.status(401).json(err.message);
+      return response.status(400).json([
+        {
+          message: 'Communication not found',
+          field: 'communication',
+          validation: 'communication',
+        },
+      ]);
+    }
+  }
 }
 
 module.exports = CommunicationController;
