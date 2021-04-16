@@ -17,6 +17,7 @@
   "email": "O {{field}} deve ser um válido.",
   "ends_with": "{{field}} deve terminar com ({{argument}}).",
   "equals": "{{field}} deve ser igual a {{argument.0}}.",
+  "file": "{{field}} deve ser um arquivo.",
   "in": "{{field}} deve estar entre os valores ({{argument}}).",
   "includes": "{{field}} deve conter: ({{argument}}).",
   "integer": "{{field}} deve ser um número INTEIRO.",

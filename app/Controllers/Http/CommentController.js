@@ -147,7 +147,7 @@ class CommentController {
         ]);
       }
 
-      comment.delete();
+      await comment.delete();
     } catch (err) {
       return response.status(400).json([
         {
@@ -176,7 +176,7 @@ class CommentController {
         ]);
       }
 
-      comment.delete();
+      await comment.delete();
     } catch (err) {
       return response.status(400).json([
         {

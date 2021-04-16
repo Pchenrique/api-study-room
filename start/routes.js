@@ -20,7 +20,13 @@ Route.post('auth', 'AuthController.authenticate').validator(
   'auth/Authenticate'
 );
 
+// Routes files
 Route.get('files/:file', 'FileController.show');
+
+Route.get(
+  'files/communication/:file',
+  'FileController.showFileCommunication'
+).middleware(['auth']);
 
 Route.post('forgotPassword', 'ForgotPasswordController.store').validator(
   'forgot/Forgot'
@@ -72,6 +78,11 @@ Route.get(
 Route.post('communication/:classroomId', 'CommunicationController.store')
   .middleware(['auth', 'verifyClassroom'])
   .validator('communication/Store');
+
+Route.delete(
+  'communication/:communicationId',
+  'CommunicationController.destroy'
+).middleware(['auth']);
 
 // Routes activities
 Route.get(

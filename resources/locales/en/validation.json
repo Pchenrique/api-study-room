@@ -17,6 +17,7 @@
   "email": "The {{field}} should be a valid email address.",
   "ends_with": "The {{field}} should end with given letters ({{argument}}).",
   "equals": "The {{field}} should should equal {{argument.0}}.",
+  "file": "{{field}} must be a file.",
   "in": "The {{field}} should fall within defined values of ({{argument}}).",
   "includes": "The {{field}} should include define letters ({{argument}}).",
   "integer": "The {{field}} should be an INTEGER.",
