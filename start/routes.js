@@ -23,10 +23,7 @@ Route.post('auth', 'AuthController.authenticate').validator(
 // Routes files
 Route.get('files/:file', 'FileController.show');
 
-Route.get(
-  'files/communication/:file',
-  'FileController.showFileCommunication'
-).middleware(['auth']);
+Route.get('files/communication/:file', 'FileController.showFileCommunication');
 
 Route.post('forgotPassword', 'ForgotPasswordController.store').validator(
   'forgot/Forgot'
