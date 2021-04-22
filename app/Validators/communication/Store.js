@@ -7,6 +7,8 @@ class communicationStore {
     return {
       title: 'required|string',
       description: 'required|string',
+      links: 'array|max:9',
+      'links.*': 'url',
       files: 'array|max:9',
       'files.*':
         'file|file_ext:svg,ico,gif,png,jpg,jpeg,doc,docx,odt,pdf,wpd,xls,pptx,txt,wmv,mp4,mov,mkv,avi,mpg,mpeg,mp3,ogg,mid,wav,zip,rar,tar.gz,7z|file_size:1000mb',

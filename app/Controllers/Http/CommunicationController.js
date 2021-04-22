@@ -38,6 +38,7 @@ class CommunicationController {
       .where('content_type_id', contentType.id)
       .with('user')
       .with('contentAttachments')
+      .with('contentLinks')
       .with('commentsContents.user')
       .orderBy('created_at', 'desc')
       .fetch();
@@ -57,6 +58,7 @@ class CommunicationController {
     const trx = await Database.beginTransaction();
 
     const data = request.only(['title', 'description']);
+    const { links } = request.only(['links']);
     const files = request.file('files');
     const { classroomId } = params;
     const { user } = auth;
@@ -74,6 +76,20 @@ class CommunicationController {
         },
         trx
       );
+
+      if (links) {
+        await Promise.all(
+          links.map((link) =>
+            communication.contentLinks().create(
+              {
+                path: link,
+                type: 'link',
+              },
+              trx
+            )
+          )
+        );
+      }
 
       if (files) {
         const random = await promisify(randomBytes)(2);
@@ -125,7 +141,11 @@ class CommunicationController {
       }
 
       await trx.commit();
-      await communication.loadMany(['user', 'contentAttachments'], null, trx);
+      await communication.loadMany(
+        ['user', 'contentAttachments', 'contentLinks'],
+        null,
+        trx
+      );
       return response.status(201).json(communication);
     } catch (err) {
       if (namedfiles) {
