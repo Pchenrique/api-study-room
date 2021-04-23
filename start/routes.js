@@ -25,6 +25,8 @@ Route.get('files/:file', 'FileController.show');
 
 Route.get('files/communication/:file', 'FileController.showFileCommunication');
 
+Route.get('files/response/:file', 'FileController.showFileResponse');
+
 Route.post('forgotPassword', 'ForgotPasswordController.store').validator(
   'forgot/Forgot'
 );

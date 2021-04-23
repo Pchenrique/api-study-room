@@ -12,9 +12,6 @@ const ContentType = use('App/Models/ContentType');
 /** @type {typeof import('@adonisjs/lucid/src/Lucid/Model')} */
 const CommentsResponse = use('App/Models/CommentsResponse');
 
-/** @type {typeof import('@adonisjs/lucid/src/Lucid/Model')} */
-const ClassRoom = use('App/Models/ClassRoom');
-
 /**
  * Resourceful controller for interacting with activities
  */
@@ -28,8 +25,9 @@ class ActivityController {
    * @param {Response} ctx.response
    * @param {View} ctx.view
    */
-  async listActivities({ params, response }) {
+  async listActivities({ params, response, auth }) {
     const { classroomId } = params;
+    const { user } = auth;
 
     const contentType = await ContentType.findBy('name', 'Activity');
 
@@ -38,10 +36,23 @@ class ActivityController {
       .where('content_type_id', contentType.id)
       .with('homework')
       .with('user')
+      .with('homeworkResponses', (builder) => {
+        builder
+          .select(
+            'id',
+            'content_id',
+            'user_id',
+            'deliveryDate',
+            'status',
+            'note',
+            'response'
+          )
+          .where('user_id', user.id);
+      })
       .orderBy('created_at', 'desc')
       .fetch();
 
-    return response.status(200).json(activities);
+    return response.status(200).json({ dataNow: new Date(), activities });
   }
 
   /**
@@ -81,12 +92,26 @@ class ActivityController {
       ]);
     }
 
-    await activity.loadMany([
-      'user',
-      'homework',
-      'contentAttachments',
-      'commentsContents.user',
-    ]);
+    await activity.loadMany({
+      user: null,
+      homework: null,
+      contentAttachments: null,
+      homeworkResponses: (builder) =>
+        builder
+          .select(
+            'id',
+            'content_id',
+            'user_id',
+            'deliveryDate',
+            'status',
+            'note',
+            'response'
+          )
+          .with('responseAttachments')
+          .with('responseLinks')
+          .where('user_id', user.id),
+      commentsContents: (builder) => builder.with('user'),
+    });
 
     // const classroom = await ClassRoom.find(activity.class_room_id);
     // await classroom.load('users', (builder) =>
@@ -117,7 +142,9 @@ class ActivityController {
     const lineJson = line.toJSON();
     const commentsPrivate = [...commentsResponseJson, ...lineJson];
 
-    return response.status(200).json({ activity, commentsPrivate });
+    return response
+      .status(200)
+      .json({ dataNow: new Date(), activity, commentsPrivate });
   }
 
   /**

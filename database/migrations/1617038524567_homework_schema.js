@@ -16,6 +16,7 @@ class HomeworkSchema extends Schema {
         .onUpdate('CASCADE')
         .onDelete('CASCADE');
       table.datetime('dateLimit').notNullable();
+      table.boolean('hasText').default(false).notNullable();
       table.float('fullPoints').default(0).notNullable();
       table.timestamps();
     });

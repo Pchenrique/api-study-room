@@ -8,11 +8,11 @@ class HomeworkResponseSchema extends Schema {
     this.create('homework_responses', (table) => {
       table.increments();
       table
-        .integer('homework_id')
+        .integer('content_id')
         .notNullable()
         .unsigned()
         .references('id')
-        .inTable('homework')
+        .inTable('contents')
         .onUpdate('CASCADE')
         .onDelete('CASCADE');
       table
@@ -22,8 +22,10 @@ class HomeworkResponseSchema extends Schema {
         .references('id')
         .inTable('users')
         .onUpdate('CASCADE');
-      table.datetime('deliveryDate').notNullable();
-      table.float('note').default(0).notNullable();
+      table.datetime('deliveryDate');
+      table.string('status', 20).default('noReply').notNullable();
+      table.float('note').default(null);
+      table.text('response', 'longtext');
       table.timestamps();
     });
   }

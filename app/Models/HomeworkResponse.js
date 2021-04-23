@@ -8,16 +8,16 @@ class HomeworkResponse extends Model {
     return this.belongsTo('App/Models/User');
   }
 
-  homework() {
-    return this.belongsTo('App/Models/Homework');
+  content() {
+    return this.belongsTo('App/Models/Content');
   }
 
   responseAttachments() {
-    return this.hasMany('App/Models/ResponseAttachments');
+    return this.hasMany('App/Models/ResponseAttachment');
   }
 
-  commentsResponses() {
-    return this.hasMany('App/Models/CommentsResponse');
+  responseLinks() {
+    return this.hasMany('App/Models/ResponseLink');
   }
 }
 

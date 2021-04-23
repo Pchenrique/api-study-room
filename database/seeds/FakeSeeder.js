@@ -31,6 +31,12 @@ const Homework = use('App/Models/Homework');
 /** @type {typeof import('@adonisjs/lucid/src/Lucid/Model')} */
 const ClassRoomUser = use('App/Models/ClassRoomUser');
 
+/** @type {typeof import('@adonisjs/lucid/src/Lucid/Model')} */
+const HomeworkResponse = use('App/Models/HomeworkResponse');
+
+/** @type {typeof import('@adonisjs/lucid/src/Lucid/Model')} */
+const ResponseAttachment = use('App/Models/ResponseAttachment');
+
 class FakeSeeder {
   async run() {
     // create user student
@@ -170,8 +176,44 @@ class FakeSeeder {
 
     await Homework.create({
       content_id: 4,
-      dateLimit: '2021-04-02 00:13:29+00',
+      dateLimit: '2021-04-10 00:13:29+00',
       fullPoints: 100,
+    });
+
+    await Content.create({
+      user_id: 1,
+      class_room_id: 2,
+      content_type_id: 2,
+      title: 'Atividade 2',
+      description:
+        'Atividade 2 Atividade 2 Atividade 2 Atividade 2 Atividade 2 Atividade 2 Atividade 2 Atividade 2 Atividade 2 Atividade 2',
+    });
+
+    await Homework.create({
+      content_id: 5,
+      hasText: true,
+      dateLimit: '2021-04-30 00:13:29+00',
+      fullPoints: 10,
+    });
+
+    await HomeworkResponse.create({
+      content_id: 4,
+      user_id: 3,
+      deliveryDate: '2021-04-10 00:00:29+00',
+      status: 'Entregue',
+    });
+
+    await HomeworkResponse.create({
+      content_id: 5,
+      user_id: 3,
+    });
+
+    await ResponseAttachment.create({
+      homework_response_id: 2,
+      path:
+        'Captura de tela de 2021-03-20 15-09-06.png_studyroom_1250_1618611701526_1.png',
+      extension: 'png',
+      type: 'image',
     });
 
     await Content.create({

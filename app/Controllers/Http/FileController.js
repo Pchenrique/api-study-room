@@ -12,6 +12,12 @@ class FileController {
       Helpers.tmpPath(`uploads/communication/${params.file}`)
     );
   }
+
+  async showFileResponse({ params, response }) {
+    return response.download(
+      Helpers.tmpPath(`uploads/response/${params.file}`)
+    );
+  }
 }
 
 module.exports = FileController;

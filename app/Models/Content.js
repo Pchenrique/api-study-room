@@ -28,6 +28,10 @@ class Content extends Model {
     return this.hasOne('App/Models/Homework');
   }
 
+  homeworkResponses() {
+    return this.hasMany('App/Models/HomeworkResponse');
+  }
+
   commentsResponse() {
     return this.hasMany('App/Models/CommentsResponse');
   }
