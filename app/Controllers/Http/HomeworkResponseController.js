@@ -124,7 +124,9 @@ class HomeworkResponseController {
       });
 
       if (!file.moved()) {
-        Drive.delete(Helpers.tmpPath(`uploads/response/${file.fileName}`));
+        await Drive.delete(
+          Helpers.tmpPath(`uploads/response/${file.fileName}`)
+        );
 
         return file.error();
       }
@@ -147,7 +149,7 @@ class HomeworkResponseController {
     } catch (err) {
       await trx.rollback();
 
-      Drive.delete(Helpers.tmpPath(`uploads/response/${file.fileName}`));
+      await Drive.delete(Helpers.tmpPath(`uploads/response/${file.fileName}`));
       // return response.status(401).json(err.message);
       return response.status(404).json([
         {
@@ -184,6 +186,16 @@ class HomeworkResponseController {
         .where('id', responseLinkId)
         .first();
 
+      if (!responseLink) {
+        return response.status(401).json([
+          {
+            message: 'Link not found in response',
+            field: 'response_file',
+            validation: 'response_file',
+          },
+        ]);
+      }
+
       if (responseLink.homework_response_id !== homeworkResponse.id) {
         return response.status(403).json([
           {
@@ -200,6 +212,65 @@ class HomeworkResponseController {
       return response.status(401).json([
         {
           message: 'Error when trying to delete the response link',
+          field: 'authorization',
+          validation: 'authorization',
+        },
+      ]);
+    }
+  }
+
+  async destroyAttachmentResponse({ params, auth, response }) {
+    const { homeworkResponseId, responseAttachmentId } = params;
+    const { user } = auth;
+
+    try {
+      const homeworkResponse = await HomeworkResponse.findOrFail(
+        homeworkResponseId
+      );
+
+      if (homeworkResponse.user_id !== user.id) {
+        return response.status(403).json([
+          {
+            message: 'This activity response does not belong to this user',
+            field: 'homework_response',
+            validation: 'homework_response',
+          },
+        ]);
+      }
+
+      const responseAttachment = await homeworkResponse
+        .responseAttachments()
+        .where('id', responseAttachmentId)
+        .first();
+
+      if (!responseAttachment) {
+        return response.status(401).json([
+          {
+            message: 'File not found in response',
+            field: 'response_file',
+            validation: 'response_file',
+          },
+        ]);
+      }
+
+      if (responseAttachment.homework_response_id !== homeworkResponse.id) {
+        return response.status(403).json([
+          {
+            message: 'This file does not belong to this answer',
+            field: 'response_file',
+            validation: 'response_file',
+          },
+        ]);
+      }
+      const fileDeleteNome = responseAttachment.path;
+      await responseAttachment.delete();
+
+      await Drive.delete(Helpers.tmpPath(`uploads/response/${fileDeleteNome}`));
+    } catch (err) {
+      // return response.status(401).json(err.message);
+      return response.status(401).json([
+        {
+          message: 'Error when trying to delete the response file',
           field: 'authorization',
           validation: 'authorization',
         },

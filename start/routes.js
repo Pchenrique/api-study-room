@@ -144,3 +144,8 @@ Route.post(
 )
   .middleware(['auth', 'verifyClassroom'])
   .validator('response/StoreAttachmentResponse');
+
+Route.delete(
+  'destroyAttachmentResponse/:homeworkResponseId/:responseAttachmentId',
+  'HomeworkResponseController.destroyAttachmentResponse'
+).middleware(['auth']);
