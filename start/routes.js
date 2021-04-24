@@ -124,3 +124,11 @@ Route.delete(
   'destroyCommentPrivate/:commentId',
   'CommentController.destroyCommentPrivate'
 ).middleware('auth');
+
+// routes homework response
+Route.post(
+  'storeLinkResponse/:classroomId/:contentId',
+  'HomeworkResponseController.storeLinkResponse'
+)
+  .middleware(['auth', 'verifyClassroom'])
+  .validator('response/StoreLinkResponse');

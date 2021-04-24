@@ -52,7 +52,7 @@ class ActivityController {
       .orderBy('created_at', 'desc')
       .fetch();
 
-    return response.status(200).json({ dataNow: new Date(), activities });
+    return response.status(200).json({ dateNow: new Date(), activities });
   }
 
   /**
@@ -144,7 +144,7 @@ class ActivityController {
 
     return response
       .status(200)
-      .json({ dataNow: new Date(), activity, commentsPrivate });
+      .json({ dateNow: new Date(), activity, commentsPrivate });
   }
 
   /**
