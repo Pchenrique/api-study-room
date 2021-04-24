@@ -71,6 +71,55 @@ class HomeworkResponseController {
       ]);
     }
   }
+
+  async destroyLinkResponse({ params, auth, response }) {
+    const { homeworkResponseId, responseLinkId } = params;
+    const { user } = auth;
+
+    try {
+      const homeworkResponse = await HomeworkResponse.findOrFail(
+        homeworkResponseId
+      );
+
+      if (homeworkResponse.user_id !== user.id) {
+        return response.status(403).json([
+          {
+            message: 'This activity response does not belong to this user',
+            field: 'homework_response',
+            validation: 'homework_response',
+          },
+        ]);
+      }
+
+      const responseLink = await homeworkResponse
+        .responseLinks()
+        .where('id', responseLinkId)
+        .first();
+
+      if (responseLink.homework_response_id !== homeworkResponse.id) {
+        return response.status(403).json([
+          {
+            message: 'This link does not belong to this answer',
+            field: 'response_link',
+            validation: 'response_link',
+          },
+        ]);
+      }
+
+      console.log('passou');
+
+      await responseLink.delete();
+    } catch (err) {
+      // return response.status(401).json(err.message);
+      return response.status(401).json([
+        {
+          message: 'Error when trying to delete the response link',
+          field: 'authorization',
+          validation: 'authorization',
+        },
+      ]);
+    }
+  }
 }
 
 module.exports = HomeworkResponseController;
