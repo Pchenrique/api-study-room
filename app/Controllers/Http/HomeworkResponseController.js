@@ -1,6 +1,10 @@
 'use strict';
 
 const Database = use('Database');
+const Drive = use('Drive');
+const Helpers = use('Helpers');
+const { randomBytes } = use('crypto');
+const { promisify } = use('util');
 
 /** @type {typeof import('@adonisjs/lucid/src/Lucid/Model')} */
 const Content = use('App/Models/Content');
@@ -15,12 +19,12 @@ class HomeworkResponseController {
     const { contentId } = params;
     const { user } = auth;
     const data = request.only('link');
+
     try {
       const activity = await Content.findOrFail(contentId);
-      await activity.load('contentType');
+      const contentType = await activity.contentType().fetch();
 
-      const activityJson = activity.toJSON();
-      if (activityJson.contentType.name !== 'Activity') {
+      if (contentType.name !== 'Activity') {
         return response.status(403).json([
           {
             message: 'Content is not an activity',
@@ -30,13 +34,14 @@ class HomeworkResponseController {
         ]);
       }
 
-      let homeworkResponse = await HomeworkResponse.query()
+      let homeworkResponse = await activity
+        .homeworkResponses()
         .where('content_id', '=', activity.id)
         .where('user_id', '=', user.id)
         .first();
 
       if (!homeworkResponse) {
-        homeworkResponse = await HomeworkResponse.create(
+        homeworkResponse = await activity.homeworkResponses().create(
           {
             content_id: activity.id,
             user_id: user.id,
@@ -67,6 +72,89 @@ class HomeworkResponseController {
             'Something happened when trying to register a new link the answer',
           field: 'link',
           validation: 'link',
+        },
+      ]);
+    }
+  }
+
+  async storeAttachmentResponse({ params, request, response, auth }) {
+    const trx = await Database.beginTransaction();
+
+    const { contentId } = params;
+    const { user } = auth;
+    const file = request.file('file');
+
+    try {
+      const activity = await Content.findOrFail(contentId);
+      const contentType = await activity.contentType().fetch();
+
+      if (contentType.name !== 'Activity') {
+        return response.status(403).json([
+          {
+            message: 'Content is not an activity',
+            field: 'activity',
+            validation: 'content',
+          },
+        ]);
+      }
+
+      let homeworkResponse = await activity
+        .homeworkResponses()
+        .where('content_id', '=', activity.id)
+        .where('user_id', '=', user.id)
+        .first();
+
+      if (!homeworkResponse) {
+        homeworkResponse = await activity.homeworkResponses().create(
+          {
+            content_id: activity.id,
+            user_id: user.id,
+          },
+          trx
+        );
+      }
+
+      const random = await promisify(randomBytes)(2);
+      const tokenFile = await random.toString('hex');
+
+      await file.move(Helpers.tmpPath('uploads/response'), {
+        name: `${file.clientName}_studyroom_${tokenFile}_${Date.now()}_1.${
+          file.subtype
+        }`,
+      });
+
+      if (!file.moved()) {
+        Drive.delete(Helpers.tmpPath(`uploads/response/${file.fileName}`));
+
+        return file.error();
+      }
+
+      const responseAttachment = await homeworkResponse
+        .responseAttachments()
+        .create(
+          {
+            homework_response_id: homeworkResponse.id,
+            path: file.fileName,
+            extension: file.subtype,
+            type: file.type,
+          },
+          trx
+        );
+
+      await trx.commit();
+
+      return response.status(201).json(responseAttachment);
+    } catch (err) {
+      await trx.rollback();
+
+      Drive.delete(Helpers.tmpPath(`uploads/response/${file.fileName}`));
+      // return response.status(401).json(err.message);
+      return response.status(404).json([
+        {
+          message:
+            'Something happened when trying to register a new file the answer',
+          field: 'file',
+          validation: 'file',
         },
       ]);
     }
@@ -105,8 +193,6 @@ class HomeworkResponseController {
           },
         ]);
       }
-
-      console.log('passou');
 
       await responseLink.delete();
     } catch (err) {
