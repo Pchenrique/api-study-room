@@ -7,6 +7,8 @@ tmp/*/*
 !tmp/uploads/placeholder_classroom.png
 !tmp/uploads/communication/
 tmp/uploads/communication/*
+!tmp/uploads/response/
+tmp/uploads/response/*
 
 
 # Environment variables, never commit this file
