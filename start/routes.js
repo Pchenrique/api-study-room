@@ -149,3 +149,10 @@ Route.delete(
   'destroyAttachmentResponse/:homeworkResponseId/:responseAttachmentId',
   'HomeworkResponseController.destroyAttachmentResponse'
 ).middleware(['auth']);
+
+Route.post(
+  'storeResponse/:classroomId/:contentId',
+  'HomeworkResponseController.storeResponse'
+)
+  .middleware(['auth', 'verifyClassroom'])
+  .validator('response/StoreResponse');
