@@ -96,6 +96,7 @@ class ActivityController {
       user: null,
       homework: null,
       contentAttachments: null,
+      contentLinks: null,
       homeworkResponses: (builder) =>
         builder
           .select(

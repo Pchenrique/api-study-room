@@ -29,7 +29,13 @@ const Content = use('App/Models/Content');
 const Homework = use('App/Models/Homework');
 
 /** @type {typeof import('@adonisjs/lucid/src/Lucid/Model')} */
+const ContentAttachment = use('App/Models/ContentAttachment');
+
+/** @type {typeof import('@adonisjs/lucid/src/Lucid/Model')} */
 const ClassRoomUser = use('App/Models/ClassRoomUser');
+
+/** @type {typeof import('@adonisjs/lucid/src/Lucid/Model')} */
+const ContentLink = use('App/Models/ContentLink');
 
 /** @type {typeof import('@adonisjs/lucid/src/Lucid/Model')} */
 const HomeworkResponse = use('App/Models/HomeworkResponse');
@@ -37,9 +43,12 @@ const HomeworkResponse = use('App/Models/HomeworkResponse');
 /** @type {typeof import('@adonisjs/lucid/src/Lucid/Model')} */
 const ResponseAttachment = use('App/Models/ResponseAttachment');
 
+/** @type {typeof import('@adonisjs/lucid/src/Lucid/Model')} */
+const ResponseLink = use('App/Models/ResponseLink');
+
 class FakeSeeder {
   async run() {
-    // create user student
+    // create user
     await User.create({
       name: 'Paulo Cesar',
       email: 'paulo@gmail.com',
@@ -64,7 +73,7 @@ class FakeSeeder {
       avatar: null,
     });
 
-    // create classroom test
+    // create classroom
     await ClassRoom.create({
       user_id: 1,
       title: 'POO',
@@ -89,6 +98,7 @@ class FakeSeeder {
       avatar: null,
     });
 
+    // create associate classroom
     await ClassRoomUser.create({
       is_teacher: true,
       is_owner: true,
@@ -137,7 +147,7 @@ class FakeSeeder {
       name: 'Material',
     });
 
-    // create content
+    // create communication id=1
     await Content.create({
       user_id: 1,
       class_room_id: 1,
@@ -147,6 +157,7 @@ class FakeSeeder {
         'Quizsfazer palco em cima dos indivíduos silenciados por seus lugares de dores infligindo sentimentos de dor na alma dos menos privilegiados, desmobilizou os discursos de seus iguais, silenciados pela heteronormatividade patriarcal sem entender as vicissitudes sociais que abrangem as minorias pobres e desprivilegiadas, que vivem à margem de uma sociedade cruel e opressora.',
     });
 
+    // create communication id=2
     await Content.create({
       user_id: 2,
       class_room_id: 2,
@@ -156,6 +167,7 @@ class FakeSeeder {
         'Professor quando vai ser a aula de logica de programação do dia 2 de outubro.',
     });
 
+    // create communication id=3
     await Content.create({
       user_id: 2,
       class_room_id: 2,
@@ -165,6 +177,7 @@ class FakeSeeder {
         'Ressignificou inverdades da homoafetividade se aproveitando da apropriação cultural. Alvejou a militância da luta anti-colonialista para propagar inverdades, prestou desacolhimento dos pretos, pardos, miscigenados, indígenas e autoproclamados cujos fenótipos nunca serão sobrepujados em detrimento dos negros, promoveu a deslegitimação da luta anti-colonialista infligindo sentimentos de dor na alma dos menos privilegiados. Deslegitimou a relativação de seus iguais, silenciados pela heteronormatividade patriarcal ressignificando a conversa com inverdades, potencializou o silenciamento da homoafetividade dos gays e não-binários.',
     });
 
+    // create activiteis id=4
     await Content.create({
       user_id: 1,
       class_room_id: 2,
@@ -176,10 +189,37 @@ class FakeSeeder {
 
     await Homework.create({
       content_id: 4,
-      dateLimit: '2021-04-10 00:13:29+00',
+      dateLimit: '2021-04-10 20:00:00+00',
       fullPoints: 100,
     });
 
+    await ContentAttachment.create({
+      content_id: 4,
+      path: 'test.png_studyroom_15ff_1618591249957_1.jpeg',
+      extension: 'png',
+      type: 'image',
+    });
+
+    await ContentAttachment.create({
+      content_id: 4,
+      path: 'test2.png_studyroom_12ab_1618591249957_1.jpeg',
+      extension: 'png',
+      type: 'image',
+    });
+
+    await ContentLink.create({
+      content_id: 4,
+      path: 'https://www.youtube.com/watch?v=9rJGmtsKndY',
+      type: 'link',
+    });
+
+    await ContentLink.create({
+      content_id: 4,
+      path: 'https://www.youtube.com/watch?v=9rJGmtsKndY',
+      type: 'link',
+    });
+
+    // create activity id=5
     await Content.create({
       user_id: 1,
       class_room_id: 2,
@@ -192,17 +232,49 @@ class FakeSeeder {
     await Homework.create({
       content_id: 5,
       hasText: true,
-      dateLimit: '2021-04-30 00:13:29+00',
+      dateLimit: '2021-04-29 20:00:00+00',
       fullPoints: 10,
     });
 
+    await ContentAttachment.create({
+      content_id: 5,
+      path: 'test.png_studyroom_15ff_1618591248157_1.jpeg',
+      extension: 'png',
+      type: 'image',
+    });
+
+    await ContentLink.create({
+      content_id: 5,
+      path: 'https://www.youtube.com/watch?v=9rJGmtsKndY',
+      type: 'link',
+    });
+
+    // create activity id=6
+    await Content.create({
+      user_id: 1,
+      class_room_id: 2,
+      content_type_id: 2,
+      title: 'Atividade 3',
+      description:
+        'Atividade 3 Atividade 3 Atividade 3 Atividade 3 Atividade 3 Atividade 3 Atividade 3 Atividade 3 Atividade 3 Atividade 3',
+    });
+
+    await Homework.create({
+      content_id: 6,
+      hasText: true,
+      dateLimit: '2021-05-01 20:00:00+00',
+      fullPoints: 100,
+    });
+
+    // create response id=1
     await HomeworkResponse.create({
       content_id: 4,
       user_id: 3,
-      deliveryDate: '2021-04-10 00:00:29+00',
+      deliveryDate: '2021-04-08 00:00:29+00',
       status: 'Entregue',
     });
 
+    // create response id=2
     await HomeworkResponse.create({
       content_id: 5,
       user_id: 3,
@@ -210,12 +282,31 @@ class FakeSeeder {
 
     await ResponseAttachment.create({
       homework_response_id: 2,
-      path:
-        'Captura de tela de 2021-03-20 15-09-06.png_studyroom_1250_1618611701526_1.png',
+      path: 'teste1.png_studyroom_1250_1618611701526_1.png',
       extension: 'png',
       type: 'image',
     });
 
+    // create response id=3
+    await HomeworkResponse.create({
+      content_id: 4,
+      user_id: 2,
+    });
+
+    await ResponseAttachment.create({
+      homework_response_id: 3,
+      path: 'teste1.png_studyroom_1250_1691611701526_1.png',
+      extension: 'png',
+      type: 'image',
+    });
+
+    await ResponseLink.create({
+      homework_response_id: 3,
+      path: 'https://www.youtube.com/watch?v=9rJGmtsKndY',
+      type: 'link',
+    });
+
+    // create Material id=7
     await Content.create({
       user_id: 1,
       class_room_id: 2,
@@ -223,6 +314,29 @@ class FakeSeeder {
       title: 'Material 1',
       description:
         'Material 1 Material 1 Material 1 Material 1 Material 1 Material 1 Material 1 Material 1',
+    });
+
+    await ContentAttachment.create({
+      content_id: 7,
+      path: 'test.png_studyroom_15ff_1618591248157_1.jpeg',
+      extension: 'png',
+      type: 'image',
+    });
+
+    await ContentLink.create({
+      content_id: 7,
+      path: 'https://www.youtube.com/watch?v=9rJGmtsKndY',
+      type: 'link',
+    });
+
+    // create Material id=8
+    await Content.create({
+      user_id: 1,
+      class_room_id: 2,
+      content_type_id: 3,
+      title: 'Material 2',
+      description:
+        'Material 2 Material 2 Material 2 Material 2 Material 2 Material 2 Material 2 Material 2',
     });
   }
 }

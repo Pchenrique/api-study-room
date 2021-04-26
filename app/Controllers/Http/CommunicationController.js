@@ -97,17 +97,13 @@ class CommunicationController {
         let iteracao = 0;
 
         // eslint-disable-next-line no-return-assign
-        await files.moveAll(
-          Helpers.tmpPath('uploads/communication'),
-          // eslint-disable-next-line no-return-assign
-          (file) => ({
-            name: `${
-              file.clientName
-            }_studyroom_${tokenFile}_${Date.now()}_${(iteracao += 1)}.${
-              file.subtype
-            }`,
-          })
-        );
+        await files.moveAll(Helpers.tmpPath('uploads/content'), (file) => ({
+          name: `${
+            file.clientName
+          }_studyroom_${tokenFile}_${Date.now()}_${(iteracao += 1)}.${
+            file.subtype
+          }`,
+        }));
 
         namedfiles = files.movedList();
 
@@ -116,9 +112,7 @@ class CommunicationController {
 
           await Promise.all(
             movedFiles.map((file) => {
-              Drive.delete(
-                Helpers.tmpPath(`uploads/communication/${file.fileName}`)
-              );
+              Drive.delete(Helpers.tmpPath(`uploads/content/${file.fileName}`));
               return '';
             })
           );
@@ -151,9 +145,7 @@ class CommunicationController {
       if (namedfiles) {
         await Promise.all(
           namedfiles.map((file) => {
-            Drive.delete(
-              Helpers.tmpPath(`uploads/communication/${file.fileName}`)
-            );
+            Drive.delete(Helpers.tmpPath(`uploads/cotent/${file.fileName}`));
             return '';
           })
         );
@@ -228,7 +220,7 @@ class CommunicationController {
         await Promise.all(
           files.map((file) => {
             // console.log(file.url);
-            Drive.delete(Helpers.tmpPath(`uploads/communication/${file.path}`));
+            Drive.delete(Helpers.tmpPath(`uploads/content/${file.path}`));
             return '';
           })
         );
