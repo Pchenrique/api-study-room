@@ -3,9 +3,9 @@
 /** @type {import('@adonisjs/lucid/src/Schema')} */
 const Schema = use('Schema');
 
-class HomeworkSchema extends Schema {
+class ContentLinkSchema extends Schema {
   up() {
-    this.create('homework', (table) => {
+    this.create('content_links', (table) => {
       table.increments();
       table
         .integer('content_id')
@@ -15,16 +15,15 @@ class HomeworkSchema extends Schema {
         .inTable('contents')
         .onUpdate('CASCADE')
         .onDelete('CASCADE');
-      table.datetime('dateLimit').notNullable();
-      table.boolean('hasText').default(false).notNullable();
-      table.float('fullPoints').default(0).notNullable();
+      table.string('path', 255).notNullable();
+      table.string('type', 10).notNullable();
       table.timestamps();
     });
   }
 
   down() {
-    this.drop('homework');
+    this.drop('content_links');
   }
 }
 
-module.exports = HomeworkSchema;
+module.exports = ContentLinkSchema;

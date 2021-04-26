@@ -14,7 +14,7 @@ class ContentAttachment extends Model {
   }
 
   getAttachmentUrl({ path }) {
-    return `${Env.get('APP_URL')}/files/communication/${path}`;
+    return `${Env.get('APP_URL')}/files/content/${path}`;
   }
 }
 

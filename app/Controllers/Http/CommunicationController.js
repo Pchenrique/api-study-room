@@ -38,6 +38,7 @@ class CommunicationController {
       .where('content_type_id', contentType.id)
       .with('user')
       .with('contentAttachments')
+      .with('contentLinks')
       .with('commentsContents.user')
       .orderBy('created_at', 'desc')
       .fetch();
@@ -57,6 +58,7 @@ class CommunicationController {
     const trx = await Database.beginTransaction();
 
     const data = request.only(['title', 'description']);
+    const { links } = request.only(['links']);
     const files = request.file('files');
     const { classroomId } = params;
     const { user } = auth;
@@ -75,23 +77,33 @@ class CommunicationController {
         trx
       );
 
+      if (links) {
+        await Promise.all(
+          links.map((link) =>
+            communication.contentLinks().create(
+              {
+                path: link,
+                type: 'link',
+              },
+              trx
+            )
+          )
+        );
+      }
+
       if (files) {
         const random = await promisify(randomBytes)(2);
         const tokenFile = await random.toString('hex');
         let iteracao = 0;
 
         // eslint-disable-next-line no-return-assign
-        await files.moveAll(
-          Helpers.tmpPath('uploads/communication'),
-          // eslint-disable-next-line no-return-assign
-          (file) => ({
-            name: `${
-              file.clientName
-            }_studyroom_${tokenFile}_${Date.now()}_${(iteracao += 1)}.${
-              file.subtype
-            }`,
-          })
-        );
+        await files.moveAll(Helpers.tmpPath('uploads/content'), (file) => ({
+          name: `${
+            file.clientName
+          }_studyroom_${tokenFile}_${Date.now()}_${(iteracao += 1)}.${
+            file.subtype
+          }`,
+        }));
 
         namedfiles = files.movedList();
 
@@ -100,9 +112,7 @@ class CommunicationController {
 
           await Promise.all(
             movedFiles.map((file) => {
-              Drive.delete(
-                Helpers.tmpPath(`uploads/communication/${file.fileName}`)
-              );
+              Drive.delete(Helpers.tmpPath(`uploads/content/${file.fileName}`));
               return '';
             })
           );
@@ -125,15 +135,17 @@ class CommunicationController {
       }
 
       await trx.commit();
-      await communication.loadMany(['user', 'contentAttachments'], null, trx);
+      await communication.loadMany(
+        ['user', 'contentAttachments', 'contentLinks'],
+        null,
+        trx
+      );
       return response.status(201).json(communication);
     } catch (err) {
       if (namedfiles) {
         await Promise.all(
           namedfiles.map((file) => {
-            Drive.delete(
-              Helpers.tmpPath(`uploads/communication/${file.fileName}`)
-            );
+            Drive.delete(Helpers.tmpPath(`uploads/cotent/${file.fileName}`));
             return '';
           })
         );
@@ -208,7 +220,7 @@ class CommunicationController {
         await Promise.all(
           files.map((file) => {
             // console.log(file.url);
-            Drive.delete(Helpers.tmpPath(`uploads/communication/${file.path}`));
+            Drive.delete(Helpers.tmpPath(`uploads/content/${file.path}`));
             return '';
           })
         );

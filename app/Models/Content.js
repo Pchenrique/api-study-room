@@ -16,12 +16,20 @@ class Content extends Model {
     return this.hasMany('App/Models/ContentAttachment');
   }
 
+  contentLinks() {
+    return this.hasMany('App/Models/ContentLink');
+  }
+
   commentsContents() {
     return this.hasMany('App/Models/CommentsContent');
   }
 
   homework() {
     return this.hasOne('App/Models/Homework');
+  }
+
+  homeworkResponses() {
+    return this.hasMany('App/Models/HomeworkResponse');
   }
 
   commentsResponse() {

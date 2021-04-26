@@ -25,6 +25,8 @@ Route.get('files/:file', 'FileController.show');
 
 Route.get('files/communication/:file', 'FileController.showFileCommunication');
 
+Route.get('files/response/:file', 'FileController.showFileResponse');
+
 Route.post('forgotPassword', 'ForgotPasswordController.store').validator(
   'forgot/Forgot'
 );
@@ -122,3 +124,35 @@ Route.delete(
   'destroyCommentPrivate/:commentId',
   'CommentController.destroyCommentPrivate'
 ).middleware('auth');
+
+// routes homework response
+Route.post(
+  'storeLinkResponse/:classroomId/:contentId',
+  'HomeworkResponseController.storeLinkResponse'
+)
+  .middleware(['auth', 'verifyClassroom'])
+  .validator('response/StoreLinkResponse');
+
+Route.delete(
+  'destroyLinkResponse/:homeworkResponseId/:responseLinkId',
+  'HomeworkResponseController.destroyLinkResponse'
+).middleware(['auth']);
+
+Route.post(
+  'storeAttachmentResponse/:classroomId/:contentId',
+  'HomeworkResponseController.storeAttachmentResponse'
+)
+  .middleware(['auth', 'verifyClassroom'])
+  .validator('response/StoreAttachmentResponse');
+
+Route.delete(
+  'destroyAttachmentResponse/:homeworkResponseId/:responseAttachmentId',
+  'HomeworkResponseController.destroyAttachmentResponse'
+).middleware(['auth']);
+
+Route.post(
+  'storeResponse/:classroomId/:contentId',
+  'HomeworkResponseController.storeResponse'
+)
+  .middleware(['auth', 'verifyClassroom'])
+  .validator('response/StoreResponse');

@@ -32,6 +32,7 @@ class MaterialController {
       .where('content_type_id', contentType.id)
       .with('user')
       .with('contentAttachments')
+      .with('contentLinks')
       .orderBy('created_at', 'desc')
       .fetch();
 
