@@ -192,8 +192,10 @@ class HomeworkResponseController {
       if (!homeworkResponse) {
         homeworkResponse = await activity.homeworkResponses().create(
           {
+            deliveryDate: null,
             content_id: activity.id,
             user_id: user.id,
+            status: 'noReply',
           },
           trx
         );
