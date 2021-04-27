@@ -266,6 +266,35 @@ class FakeSeeder {
       fullPoints: 100,
     });
 
+    // create activity id=7
+    await Content.create({
+      user_id: 1,
+      class_room_id: 3,
+      content_type_id: 2,
+      title: 'Atividade Teste',
+      description: 'Essa é uma atividade de teste, seja bem vindo!',
+    });
+
+    await Homework.create({
+      content_id: 7,
+      hasText: true,
+      dateLimit: '2021-04-29 23:00:00+00',
+      fullPoints: 100,
+    });
+
+    await ContentAttachment.create({
+      content_id: 7,
+      path: 'test.png_studyroom_15ff_1618591248157_1.jpeg',
+      extension: 'png',
+      type: 'image',
+    });
+
+    await ContentLink.create({
+      content_id: 7,
+      path: 'https://www.youtube.com/watch?v=9rJGmtsKndY',
+      type: 'link',
+    });
+
     // create response id=1
     await HomeworkResponse.create({
       content_id: 4,
@@ -306,7 +335,7 @@ class FakeSeeder {
       type: 'link',
     });
 
-    // create Material id=7
+    // create Material id=8
     await Content.create({
       user_id: 1,
       class_room_id: 2,
@@ -317,19 +346,19 @@ class FakeSeeder {
     });
 
     await ContentAttachment.create({
-      content_id: 7,
+      content_id: 8,
       path: 'test.png_studyroom_15ff_1618591248157_1.jpeg',
       extension: 'png',
       type: 'image',
     });
 
     await ContentLink.create({
-      content_id: 7,
+      content_id: 8,
       path: 'https://www.youtube.com/watch?v=9rJGmtsKndY',
       type: 'link',
     });
 
-    // create Material id=8
+    // create Material id=9
     await Content.create({
       user_id: 1,
       class_room_id: 2,
@@ -337,6 +366,21 @@ class FakeSeeder {
       title: 'Material 2',
       description:
         'Material 2 Material 2 Material 2 Material 2 Material 2 Material 2 Material 2 Material 2',
+    });
+
+    // create Material id=10
+    await Content.create({
+      user_id: 1,
+      class_room_id: 3,
+      content_type_id: 3,
+      title: 'Material Teste',
+      description: 'Esté é um material teste!',
+    });
+
+    await ContentLink.create({
+      content_id: 10,
+      path: 'https://www.youtube.com/watch?v=9rJGmtsKndY',
+      type: 'link',
     });
   }
 }
