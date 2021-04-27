@@ -23,7 +23,7 @@ Route.post('auth', 'AuthController.authenticate').validator(
 // Routes files
 Route.get('files/:file', 'FileController.show');
 
-Route.get('files/communication/:file', 'FileController.showFileCommunication');
+Route.get('files/content/:file', 'FileController.showFileCommunication');
 
 Route.get('files/response/:file', 'FileController.showFileResponse');
 
